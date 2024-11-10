@@ -1,0 +1,44 @@
+{% extends 'navbar.html' %}
+{% block content %}
+{% load static%}
+<style>
+    /* body{
+        background-image: linear-gradient(to right, rgba(255,0,0,0), rgb(33, 95, 94));
+    } */
+    table{
+        background-color: rgba(247, 240, 240, 0.7);
+        width:100%;
+    }
+    td{
+        padding: 10px 10px;
+    }
+</style>
+        <table border="1px" class="table text-center">
+            <tr><h1 class="py-2 text-center bg-info mt-4" style="font-family: Georgia, 'Times New Roman', Times, serif;">All Users Details</h1></tr>
+            <thead class="text-white bg-primary" style="font-weight: bold;">
+                <tr>
+                    <td>Username</td>
+                    <td>Email</td>
+                    <td>Address</td>
+                    <td>Contact No.</td>
+                    <td>Image</td>
+                    <td>Action</td>
+                </tr>
+            </thead>
+            <tbody class="bg-light">
+                {% for u in users %}
+                    <tr>
+                        <td>{{u.user.username}}</td>
+                        <td>{{u.user.email}}</td>
+                        <td>{{u.address}}</td>
+                        <td>{{u.phone}}</td>
+                        <td><img src="{{u.prf_image.url}}" class="w-25"></td>
+                        <td>
+                            <a href="" class="btn btn-sm btn-outline-dark" role="button">DELETE</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+{% endblock %}

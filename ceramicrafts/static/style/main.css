@@ -1,0 +1,104 @@
+/* header */
+
+
+.carousel-inner h1{
+    font-size: 60px;
+    font-family: var(--lg-font);
+}
+.carousel-item .btn{
+    border-color: #131212!important;
+    background-color: rgb(243, 243, 237);
+    border-radius: 30px;
+}
+.carousel-item .btn:hover{
+    border-color: var(--red)!important;
+}
+/* title */
+.title h2::before{
+    position: absolute;
+    content: "";
+    width: 4px;
+    height: 50px;
+    background-color: var(--red);
+    left: -20px;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+}
+.fbutton .btn:hover{
+    border-color: var(--pink)!important;
+    background-color: rgb(221, 214, 214)
+}
+.fbutton .active{
+    background-color: var(--pink)!important;
+}
+#about{
+    background-color: rgba(179, 179, 179, 0.05);
+}
+/* cart */
+
+#cart-bottom .coupon>div,#cart-bottom .total>div{
+    border: 1px solid gray;
+}
+#cart-bottom .coupon h5,#cart-bottom .total h5{
+    background: rgb(20, 83, 141);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-weight: 700;
+}
+#cart-bottom .coupon p,#cart-bottom .coupon input{
+    padding: 0 12px;
+}
+#cart-bottom .coupon input{
+    height: 44px;
+}
+#cart-bottom .coupon input{
+    margin: 0 0 20px 12px;
+}
+#cart-bottom .coupon button{
+    background: #131212;
+    color: white;
+    height: 44px;
+    font-weight: 500;
+    margin-left: 12px;
+    margin-bottom: 3px;
+}
+#cart-bottom .total div>div{
+    padding: 0 12px;
+}
+#cart-bottom .total p{
+ color: rgb(47, 49, 49);
+}
+#cart-bottom .total button{
+    background: #131212;
+    color: white;
+    height: 44px;
+    font-weight: 500;
+    margin-left: 12px;
+    margin-bottom: 3px;
+}
+/* news */
+#newsletter{
+    background-color: rgba(179, 179, 179, 0.05);
+}
+#newsletter p{
+    max-width: 600px;
+}
+#newsletter .input-group{
+    max-width: 500px;
+}
+#newsletter .form-control{
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+}
+#newsletter .btn{
+    background-color: var(--pink);
+    color: #fff;
+    border-color: var(--pink);
+}
+#newsletter .btn:hover{
+    background-color: #000;
+    border-color: #000;
+}

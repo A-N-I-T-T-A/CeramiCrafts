@@ -1,0 +1,32 @@
+from django.urls import path
+from .import views
+from django.conf.urls.static import static
+
+urlpatterns=[
+     path('',views.index,name='index'),
+     path('loginpage',views.loginpage,name='loginpage'),
+     path('loginuser',views.loginuser,name='loginuser'),
+     path('regpage',views.regpage,name='regpage'),
+     path('reguser',views.reguser,name='reguser'),
+     path('adminhome',views.adminhome,name='adminhome'),
+     path('categorypage',views.categorypage,name='categorypage'),
+     path('addcata',views.addcata,name='addcata'),
+     path('productpage',views.productpage,name='productpage'),
+     path('addproduct',views.addproduct,name='addproduct'),
+     path('productshow',views.productshow,name='productshow'),
+     path('delete_prod/<int:a>',views.delete_prod,name='delete_prod'),
+     path('userindex',views.userindex,name='userindex'),
+     path('userprofile',views.userprofile,name='userprofile'),
+     path('cart_view',views.cart_view,name='cart_view'),
+     path('addcart/<int:a>',views.addcart,name='addcart'),
+     path('delete_cart/<int:a>',views.delete_cart,name='delete_cart'),
+     path('allcategory',views.allcategory,name='allcategory'),
+     path('showcategory/<int:a>',views.showcategory,name='showcategory'),
+     path('logout_user',views.logout_user,name='logout_user'),
+     path('productview/<int:a>',views.productview,name='productview'),
+     path('update_cart/<int:p_id>/', views.update_cart, name='update_cart'),
+     path('create_order', views.create_order, name='create_order'),
+     path('logout_admin',views.logout_admin,name='logout_admin'),
+     path('usershow',views.usershow,name='usershow'),
+     path('view_order',views.view_order,name='view_order'),
+]

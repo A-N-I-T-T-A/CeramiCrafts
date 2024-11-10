@@ -1,0 +1,102 @@
+{% extends 'navbar.html' %}
+{% block content %}
+{% load static%}
+<style>
+    /* body{
+        background-image: url('{% static "img/C.jpg" %}'); 
+        background-repeat: no-repeat; 
+        background-size: cover;
+        background-attachment: fixed; 
+    } */
+    table{
+        /* position: absolute;
+        left: 50%;
+        top: 40%; */
+        /* background-color: rgba(247, 240, 240, 0.7); */
+        /* padding: 10px 10px; */
+        /* width: 500px; */
+        width:100%;
+        /* transform: translate(-50%,-30%);
+        padding: 10px; */
+    }
+    td{
+        padding: 10px 10px;
+    }
+    input,select{
+        font-size: 15px;
+        background: rgba(246, 243, 243, 0.852);
+        color: #211a1a;
+        height: 50px;
+        width: 100%;
+        padding: 0 10px 0 45px;
+        border: 1px solid black;
+        border-radius: 30px;
+        outline: none;
+        transition: .2s ease;
+    }
+    .submit{
+        font-size: 15px;
+        font-weight: 500;
+        color: rgb(255, 247, 247);
+        height: 45px;
+        width: 100%;
+        border: none;
+        border-radius: 30px;
+        outline: none;
+        background: rgba(11, 11, 11, 0.7);
+        cursor: pointer;
+        transition: .3s ease-in-out;
+    }
+    .submit:hover{
+        color: #f0efef;
+        background: rgba(255, 254, 254, 0.5);
+        box-shadow: 1px 5px 7px 1px rgba(0, 0, 0, 0.2);
+    }
+</style>
+    <form action="{% url 'addproduct' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for message in messages %}
+            <h5>
+                <div class=" container text-center font-weight-bolder alert alert-success" style="font-size: large;">
+                    {{ message }}
+                </div>
+            </h5>
+        {% endfor %} 
+        <table>
+            <tr><h1 class="py-2 text-center bg-info mt-4" style="font-family: Georgia, 'Times New Roman', Times, serif;">Add Product</h1></tr>
+            <!-- <tr>
+                <td class="input pt-5 w-50 text-center" style="font-family: Georgia, 'Times New Roman', Times, serif;"><h2>Add Product</h2></td><br>
+            </tr> -->
+            <tr>
+                <td><input type="text" name="pname" placeholder="Product Name:"></td>
+            </tr>
+            <tr>
+                <td><input type="text" name="pdesc" placeholder="Description:"></td>
+            </tr>
+            <tr>
+                <td>
+                    <select name="sel">
+                        <option>Select Category</option>
+                        {% for c in category %}
+                            <option value="{{c.id}}">{{c.category_name}}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><input type="number" name="Nos" placeholder="Nos."></td>
+            </tr>
+            <tr>
+                <td><input type="number" name="price" placeholder="Price:"></td>
+            </tr>
+            <tr>
+                <td><input type="file" class="input-field pt-2" name="prdimage" accept="image/*"></td>
+            </tr>
+            <tr class="text-center">
+                <td><button class="btn bg-danger submit w-50" type="submit">Save</button></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}
+
+

@@ -1,0 +1,47 @@
+{% extends 'navbar.html' %}
+{% block content %}
+{% load static%}
+<style>
+    /* body{
+        background-image: linear-gradient(to right, rgba(255,0,0,0), rgb(33, 95, 94));
+    } */
+    table{
+        background-color: rgba(247, 240, 240, 0.7);
+        width:100%;
+    }
+    td{
+        padding: 10px 10px;
+    }
+</style>
+        <table border="1px" class="table text-center">
+            <tr><h1 class="py-2 text-center bg-info mt-4" style="font-family: Georgia, 'Times New Roman', Times, serif;">All Products Details</h1></tr>
+            <thead class="text-white bg-primary" style="font-weight: bold;">
+                <tr>
+                    <td>Product Name</td>
+                    <td>Description</td>
+                    <td>Nos.</td>
+                    <td>Price</td>
+                    <td>Category</td>
+                    <td>Image</td>
+                    <td>Action</td>
+                </tr>
+            </thead>
+            <tbody class="bg-light">
+                {% for p in product %}
+                    <tr>
+                        <td>{{p.pdname}}</td>
+                        <td>{{p.pd_desc}}</td>
+                        <td>{{p.nos}}</td>
+                        <td>{{p.pdprice}}</td>
+                        <td>{{p.category.category_name}}</td>
+                        <td><img src="{{p.pdimage.url}}" class="w-25"></td>
+                        <td>
+                            <a href="{% url 'delete_prod' p.id %}" class="btn btn-sm btn-outline-dark" role="button"><i class='bx bxs-trash'>Delete</i></a>
+                            <a href="{% url 'delete_prod' p.id %}" class="btn btn-sm btn-outline-dark" role="button"><i class='bx bx-edit' >Update</i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+{% endblock %}
