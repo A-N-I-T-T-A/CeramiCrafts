@@ -21,8 +21,8 @@
     <nav class = "navbar navbar-expand-lg navbar-light bg-white text-dark py-2 fixed-top">
         <div class="container">
             <a class = "navbar-brand d-flex justify-content-between align-items-center order-lg-0" href = "">
-                <i class='bx bxs-shopping-bag' style="font-size: 25px;"></i>
-                <span class = "text-uppercase fw-lighter ms-2">CeramiCrafts</span>
+                <i class='bx bxs-home-heart' style="font-size: 25px;"></i>
+                <span class = "text-uppercase fw-lighter ms-2 font-weight-bold">CeramiCrafts</span>
             </a>
             <div class = "order-lg-2 nav-btns">
                 <a href="{% url 'cart_view' %}"><button type = "button" class = "btn position-relative">
@@ -35,14 +35,14 @@
               <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
                 <ul class = "navbar-nav mx-auto text-center">
                     <li class = "nav-item px-2 py-2">
-                        <a class = "nav-link text-uppercase text-dark" href = "{% url 'index' %}">Home</a>
+                        <a class = "nav-link text-uppercase text-dark font-weight-bold" href = "{% url 'index' %}">Home</a>
                     </li>
                     <li class = "nav-item px-2 py-2">
-                        <a class = "nav-link text-uppercase text-dark" href = "#about">about</a>
+                        <a class = "nav-link text-uppercase text-dark font-weight-bold" href = "#about">about</a>
                     </li>
                     <li class = "nav-item px-2 py-2">
                         <div class="dropdown show">
-                            <a class="nav-link btn btn-info dropdown-toggle bg-white border-0 text-dark text-uppercase" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link btn btn-info dropdown-toggle bg-white border-0 text-dark text-uppercase font-weight-bold" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
                               Catagories
                             </a>
                           
@@ -55,10 +55,10 @@
                           </div>
                     </li>
                     <li class = "nav-item px-2 py-2 ">
-                        <a href="{% url 'loginpage' %}" class="nav-link text-uppercase text-dark">Login</a>
+                        <a href="{% url 'loginpage' %}" class="nav-link text-uppercase text-dark font-weight-bold">Login</a>
                     </li>
                     <li class = "nav-item px-2 py-2 ">
-                        <a href="{% url 'regpage' %}" class="nav-link text-uppercase text-dark">Signup</a>
+                        <a href="{% url 'regpage' %}" class="nav-link text-uppercase text-dark font-weight-bold">Signup</a>
                     </li>
                 </ul>
               </div>
@@ -108,12 +108,12 @@
                     {% if forloop.counter <= 4 %}
                         <div class="col-sm-3">
                             <div class="card text-center border-dark" >
-                                <img class="card-img-top w-100 h-50 p-1" src="{{p.product.pdimage.url}}" alt="Card image cap">
+                                <img class="card-img-top w-100 h-50 p-1" src="{{p.pdimage.url}}" alt="Card image cap">
                                 <div class="card-body">
-                                <h5 class="card-title">{{p.product.pdname}}</h5>
-                                <p class="card-text">{{p.product.category.category_name}}</p>
-                                <p class="card-text">{{p.product.pdprice}}</p>
-                                <p class="card-text"><a href="{% url 'productview' p.product.id %}" class="btn btn-success">view more</a></p>
+                                <h5 class="card-title">{{p.pdname}}</h5>
+                                <p class="card-text">{{p.category.category_name}}</p>
+                                <p class="card-text">{{p.pdprice}}</p>
+                                <p class="card-text"><a href="{% url 'productview' p.id %}" class="btn btn-success">view more</a></p>
                                 </div>
                             </div>
                         </div>

@@ -5,19 +5,21 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import authenticate,login
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
 import os
 # Create your views here.
 def index(request):
     cata=category.objects.all()
     items=product.objects.all()
-    prod=order.objects.all()
+    prod=product.objects.filter(id__in=order.objects.values_list('product', flat=True).distinct())
     return render(request,"index.html",{'category':cata,'product':prod,'items':items})
 @login_required(login_url='loginpage')
 def userindex(request):
     current=request.user.id 
     user=userdetails.objects.get(user_id=current)
-    prod=order.objects.all()
+    prod=prod=product.objects.filter(id__in=order.objects.values_list('product', flat=True).distinct())
     items=product.objects.all()
     cata=category.objects.all()
     return render(request,"userindex.html",{'category':cata,'user':user,'product':prod,'items':items})
@@ -40,7 +42,40 @@ def productview(request,a):
         return render(request,'productV.html',{'product':prd,'nav':c})
 
 def loginpage(request):
-    return render(request,"Login.html")
+    cata=category.objects.all()
+    return render(request,"Login.html",{'category':cata})
+def forgotpage(request):
+    cata=category.objects.all()
+    usernames = User.objects.values_list('username', flat=True)
+    return render(request,"forgotP.html",{'category':cata,'usernames':usernames})
+def forgot_password_submit(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+
+        try:
+            user = User.objects.get(username=username)
+
+        except User.DoesNotExist:
+            messages.error(request, "Username does not exist.")
+            return redirect('forgot_password')  
+        
+        if new_password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+            return redirect('forgot_password')
+
+        if len(new_password) < 8:
+            messages.error(request, "Password must be at least 8 characters long.")
+            return redirect('forgot_password')
+
+        user.password = make_password(new_password)
+        user.save()
+
+        messages.success(request, "Password updated successfully! You can now log in.")
+        return redirect('loginpage')  
+    return redirect('forgotpage')
+
 def loginuser(request):
     if request.method == 'POST':
         user=request.POST['username']
@@ -67,7 +102,11 @@ def loginuser(request):
 
 
 def regpage(request):
-    return render(request,"register.html")
+    existing_emails = list(User.objects.values_list('email', flat=True))
+    usernames = User.objects.values_list('username', flat=True)
+    phones=userdetails.objects.values_list('phone', flat=True)
+    cata=category.objects.all()
+    return render(request,"register.html",{'category':cata,'existing_emails': existing_emails,'usernames':usernames,'phone':phones})
 def reguser(request):
     if request.method == 'POST':
         fname=request.POST['fname']
@@ -140,13 +179,40 @@ def delete_prod(request,a):
     p=product.objects.get(id=a)
     if len(p.pdimage)>0:
         os.remove(p.pdimage.path)
-    # up=cart1.objects.filter(product_id=a)
-    # up.delete()
+    up=cart.objects.filter(product_id=a)
+    up.delete()
     p.delete()
     return redirect('productshow')
+@login_required(login_url='loginpage')
+def update_product(request, a):
+    prod = product.objects.get(id=a)
+
+    if request.method == 'POST':
+        pdname = request.POST.get('pdname')
+        pd_desc = request.POST.get('pd_desc')
+        nos = request.POST.get('nos')
+        pdprice = request.POST.get('pdprice')
+        cate = request.POST.get('category')
+        pdimage = request.FILES.get('pdimage', prod.pdimage)
+
+        # Update the product object
+        prod.pdname = pdname
+        prod.pd_desc = pd_desc
+        prod.nos = nos
+        prod.pdprice = pdprice
+        prod.category.id = cate  # Assuming `category` is a ForeignKey
+        prod.pdimage = pdimage
+        prod.save()
+
+        return redirect('productshow')  # Replace with your product list view name
+    categ = category.objects.all()  # Fetch all categories for dropdown
+    return render(request, 'editproduct.html', {'product': prod, 'categories': categ})
 @login_required(login_url='loginpage') 
 def usershow(request):
     userd=userdetails.objects.all()
+    for user in userd:
+        total_quantity = order.objects.filter(user=user.user).aggregate(total=Sum('quantity'))['total'] or 0
+        user.total_orders = total_quantity
     return render(request,"showuser.html",{'users':userd})
 @login_required(login_url='loginpage') 
 def logout_admin(request):

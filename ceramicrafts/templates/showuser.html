@@ -19,9 +19,7 @@
                 <tr>
                     <td>Username</td>
                     <td>Email</td>
-                    <td>Address</td>
-                    <td>Contact No.</td>
-                    <td>Image</td>
+                    <td>Order Summary</td>
                     <td>Action</td>
                 </tr>
             </thead>
@@ -30,9 +28,7 @@
                     <tr>
                         <td>{{u.user.username}}</td>
                         <td>{{u.user.email}}</td>
-                        <td>{{u.address}}</td>
-                        <td>{{u.phone}}</td>
-                        <td><img src="{{u.prf_image.url}}" class="w-25"></td>
+                        <td>{{ u.total_orders }}</td>
                         <td>
                             <a href="" class="btn btn-sm btn-outline-dark" role="button">DELETE</a>
                         </td>

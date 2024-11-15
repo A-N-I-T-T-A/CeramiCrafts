@@ -27,8 +27,8 @@
         <nav class = "navbar navbar-expand-lg navbar-light bg-white text-dark py-3">
             <div class="container">
                 <a class = "navbar-brand d-flex justify-content-between align-items-center order-lg-0" href = "">
-                    <i class='bx bxs-shopping-bag' style="font-size: 25px;"></i>
-                    <span class = "text-uppercase fw-lighter ms-2">StyleSpark</span>
+                    <i class='bx bxs-home-heart' style="font-size: 25px;"></i>
+                    <span class = "text-uppercase fw-lighter ms-2 font-weight-bold">CeramiCrafts</span>
                 </a>
                 <div class = "order-lg-2 nav-btns">
                     <a href="{% url 'cart_view' %}"><button type = "button" class = "btn position-relative">
@@ -41,14 +41,14 @@
                 <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
                 <ul class = "navbar-nav mx-auto text-center">
                     <li class = "nav-item px-2 py-2">
-                        <a class = "nav-link text-uppercase text-dark" href = "{% url 'index' %}">Home</a>
+                        <a class = "nav-link text-uppercase text-dark font-weight-bold" href = "{% url 'index' %}">Home</a>
                     </li>
                     <li class = "nav-item px-2 py-2">
                         <div class="dropdown show">
-                            <a class="nav-link btn btn-secondary dropdown-toggle bg-white border-0 text-dark text-uppercase" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link btn btn-secondary dropdown-toggle bg-white border-0 text-dark text-uppercase font-weight-bold" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
                                 Catagories
                             </a>
-                            <div class="dropdown-menu bg-white text-center border-0" aria-labelledby="dropdownMenuLink">
+                            <div class="dropdown-menu bg-white text-center border-0 " aria-labelledby="dropdownMenuLink">
                                 <a class="dropdown-item" href="{% url 'allcategory' %}">All products</a>
                                 {% for c in nav %}
                                     <a class="dropdown-item" href="{% url 'showcategory' c.id %}">{{c.category_name}}</a>
@@ -57,10 +57,10 @@
                         </div>
                     </li>
                     <li class = "nav-item px-2 py-2 ">
-                        <a href="{% url 'loginpage' %}" class="nav-link text-uppercase text-dark">Login</a>
+                        <a href="{% url 'loginpage' %}" class="nav-link text-uppercase text-dark font-weight-bold">Login</a>
                     </li>
                     <li class = "nav-item px-2 py-2 ">
-                        <a href="{% url 'regpage' %}" class="nav-link text-uppercase text-dark">Signup</a>
+                        <a href="{% url 'regpage' %}" class="nav-link text-uppercase text-dark font-weight-bold">Signup</a>
                     </li>
                 </ul>
                 </div>

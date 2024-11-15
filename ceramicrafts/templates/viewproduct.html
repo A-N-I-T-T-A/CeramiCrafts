@@ -14,7 +14,7 @@
     }
 </style>
         <table border="1px" class="table text-center">
-            <tr><h1 class="py-2 text-center bg-info mt-4" style="font-family: Georgia, 'Times New Roman', Times, serif;">All Products Details</h1></tr>
+            <tr><h1 class="py-2 text-center bg-info mt-4" style="font-family: Georgia, 'Times New Roman', Times, serif;">All Home Decors</h1></tr>
             <thead class="text-white bg-primary" style="font-weight: bold;">
                 <tr>
                     <td>Product Name</td>
@@ -37,7 +37,9 @@
                         <td><img src="{{p.pdimage.url}}" class="w-25"></td>
                         <td>
                             <a href="{% url 'delete_prod' p.id %}" class="btn btn-sm btn-outline-dark" role="button"><i class='bx bxs-trash'>Delete</i></a>
-                            <a href="{% url 'delete_prod' p.id %}" class="btn btn-sm btn-outline-dark" role="button"><i class='bx bx-edit' >Update</i></a>
+                            <a href="{% url 'update_prod' p.id %}" class="btn btn-sm btn-outline-dark" role="button">
+                                <i class='bx bx-edit'>Update</i>
+                            </a>                            
                         </td>
                     </tr>
                 {% endfor %}

@@ -18,14 +18,14 @@
     }
 </style>
 <body>
-    <nav class = "navbar navbar-expand-lg navbar-light bg-info text-dark py-3 fixed-top">
+    <nav class = "navbar navbar-expand-lg navbar-light bg-white text-dark py-2 fixed-top">
         <div class="container">
             <a class = "navbar-brand d-flex justify-content-between align-items-center order-lg-0" href = "">
                 <i class='bx bxs-home-heart' style="font-size: 25px;"></i>
                 <span class = "text-uppercase fw-lighter ms-2">CeramiCrafts</span>
             </a>
             <div class = "order-lg-2 nav-btns">
-                <a href="{% url 'userprofile' %}" class="font-weight-bold text-black-50"><img src="{{user.prf_image.url}}" alt="user" width="40" height="40" style="border-radius: 50%;"><span class="ml-1">{{user.user.username}}</span></a>
+                <a href="{% url 'userprofile' %}" style="text-decoration: none;" class="font-weight-bold text-dark"><img src="{{user.prf_image.url}}" alt="user" width="40" height="40" style="border-radius: 50%;"><span class="ml-1">{{user.user.username}}</span></a>
                 <a href="{% url 'cart_view' %}"><button type = "button" class = "btn position-relative">
                     <i class='bx bxs-cart' style="font-size: 25px;"></i>
                 </button></a>
@@ -36,20 +36,17 @@
             <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
             <ul class = "navbar-nav mx-auto text-center">
                 <li class = "nav-item px-2 py-2">
-                    <a class = "nav-link text-uppercase text-dark" href = "{% url 'userindex' %}">Home</a>
+                    <a class = "nav-link text-uppercase text-dark font-weight-bold" href = "{% url 'userindex' %}">Home</a>
                 </li>
                 <li class = "nav-item px-2 py-2">
-                    <a class = "nav-link text-uppercase text-dark" href = "#blogs">blogs</a>
-                </li>
-                <li class = "nav-item px-2 py-2">
-                    <a class = "nav-link text-uppercase text-dark" href = "#about">about</a>
+                    <a class = "nav-link text-uppercase text-dark font-weight-bold" href = "#about">about</a>
                 </li>
                 <li class = "nav-item px-2 py-2">
                     <div class="dropdown show">
-                        <a class="nav-link btn btn-secondary dropdown-toggle bg-info border-0 text-dark text-uppercase" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link btn btn-secondary dropdown-toggle bg-white border-0 text-dark text-uppercase font-weight-bold" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
                             Catagories
                         </a>
-                        <div class="dropdown-menu bg-info text-center border-0" aria-labelledby="dropdownMenuLink">
+                        <div class="dropdown-menu bg-white text-center border-0" aria-labelledby="dropdownMenuLink">
                             <a class="dropdown-item" href="{% url 'allcategory' %}">All products</a>
                             {% for c in category %}
                                 <a class="dropdown-item" href="{% url 'showcategory' c.id %}">{{c.category_name}}</a>
@@ -108,12 +105,12 @@
                     {% if forloop.counter <= 4 %}
                         <div class="col-sm-3">
                             <div class="card text-center border-dark" >
-                                <img class="card-img-top w-100 h-50 p-1" src="{{p.product.pdimage.url}}" alt="Card image cap">
+                                <img class="card-img-top w-100 h-50 p-1" src="{{p.pdimage.url}}" alt="Card image cap">
                                 <div class="card-body">
-                                <h5 class="card-title">{{p.product.pdname}}</h5>
-                                <p class="card-text">{{p.product.category.category_name}}</p>
-                                <p class="card-text">{{p.product.pdprice}}</p>
-                                <p class="card-text"><a href="{% url 'productview' p.product.id %}" class="btn btn-success">view more</a></p>
+                                <h5 class="card-title">{{p.pdname}}</h5>
+                                <p class="card-text">{{p.category.category_name}}</p>
+                                <p class="card-text">{{p.pdprice}}</p>
+                                <p class="card-text"><a href="{% url 'productview' p.id %}" class="btn btn-success">view more</a></p>
                                 </div>
                             </div>
                         </div>

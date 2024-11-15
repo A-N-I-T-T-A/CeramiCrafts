@@ -16,9 +16,7 @@
         background-color: rgba(62, 65, 70, 0.4);
         border-radius: 12px;
     }
-    body{
-        background-color: antiquewhite;
-    }
+    
    .register-container{
         position: absolute;
         left: 50%;
@@ -116,8 +114,8 @@
     <nav class = "navbar navbar-expand-lg navbar-light bg-light text-dark py-2">
         <div class="container">
             <a class = "navbar-brand d-flex justify-content-between align-items-center order-lg-0" href = "">
-                <i class='bx bxs-shopping-bag' style="font-size: 25px;"></i>
-                <span class = "text-uppercase fw-lighter ms-2">StyleSpark</span>
+                <i class='bx bxs-home-heart' style="font-size: 25px;"></i>
+                <span class = "text-uppercase fw-lighter ms-2">CeramiCrafts</span>
             </a>
             <button class="navbar-toggler border-0 position-relative" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -127,11 +125,22 @@
                     <li class = "nav-item px-2 py-2">
                         <a class = "nav-link text-uppercase text-dark font-weight-bold" href = "{% url 'index' %}">Home</a>
                     </li>
-                    <li class = "nav-item px-2 py-2 ">
-                        <a href="{% url 'loginpage' %}" class="nav-link text-uppercase text-dark font-weight-bold">Login</a>
+                    <li class = "nav-item px-2 py-2">
+                        <div class="dropdown show">
+                            <a class="nav-link text-uppercase text-dark font-weight-bold" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
+                              Catagories
+                            </a>
+                          
+                            <div class="dropdown-menu bg-white text-center border-0" aria-labelledby="dropdownMenuLink">
+                                <a class="dropdown-item" href="{% url 'allcategory' %}">All products</a>
+                                {% for c in category %}
+                                    <a class="dropdown-item" href="{% url 'showcategory' c.id %}">{{c.category_name}}</a>
+                                {% endfor %}
+                            </div>
+                          </div>
                     </li>
                     <li class = "nav-item px-2 py-2 ">
-                        <a href="{% url 'regpage' %}" class="nav-link text-uppercase text-dark font-weight-bold">Signup</a>
+                        <a href="{% url 'loginpage' %}" class="nav-link text-uppercase text-dark font-weight-bold">Login</a>
                     </li>
                 </ul>
               </div>
@@ -141,7 +150,7 @@
         <div class="top">
             <header class="font-weight-bold">Sign Up</header>
             <div class="two text-center">
-                <label>Already a member?<a href="{% url 'loginpage' %}">Login</a></label>
+                <label>Already a member?<a href="{% url 'loginpage' %}" style="color: green;">Login</a></label>
             </div>
             {% for message in messages %}
             <h5>
@@ -153,34 +162,39 @@
         </div>
         <form action="{% url 'reguser' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
+            <div><span id="nameError" style="color: red;" ></span></div>
             <div class="two-forms">
                 <div class="input-box">
-                    <input type="text" class="input-field" name="fname" placeholder="Firstname">
+                    <input type="text" class="input-field" name="fname" id="fname" placeholder="Firstname">
                     <i class="bx bx-user icon-left"></i>
                 </div>
                 <div class="input-box">
-                    <input type="text" class="input-field" name="lname" placeholder="Lastname">
+                    <input type="text" class="input-field" name="lname" id="lname" placeholder="Lastname">
                     <i class="bx bx-user icon-left"></i>
                 </div>
             </div>
             <div class="two-forms">
+                <div><span id="usernameError" style="color: red;" ></span></div>
+                <div><span id="emailError" style="color: red;" ></span></div>
+            </div>
+            <div class="two-forms">
                 <div class="input-box">
-                    <input type="text" class="input-field" name="username" placeholder="Username">
+                    <input type="text" class="input-field" name="username" id="username" placeholder="Username">
                     <i class='bx bxs-user icon-left' ></i>
                 </div>
                 <div class="input-box">
-                    <input type="email" class="input-field" name="email" placeholder="Email">
+                    <input type="email" class="input-field" name="email" id="email" placeholder="Email">
                     <i class="bx bx-envelope icon-left"></i>
                 </div>
             </div>
             
             <div class="input-box">
-                <input type="text" class="input-field" name="address" placeholder="Enter Address">
+                <input type="text" class="input-field" name="address" id="address" placeholder="Enter Address">
                 <i class="bx bx-envelope icon-left"></i>
             </div>
-            
+            <div><span id="contactError" style="color: red;" ></span></div>
             <div class="input-box">
-                <input type="text" class="input-field" name="contact" placeholder="Contact Number">
+                <input type="text" class="input-field" name="contact" id="contact" placeholder="Contact Number">
                 <i class="bx bx-user icon-left"></i>
             </div>
             <div class="input-box mb-2">
@@ -188,21 +202,22 @@
                 <input type="file" class="input-field pt-2" name="profile" accept="image/*">
                 
             </div>
-            <div class="two-forms">
-                <div class="input-box">
-                    <input type="password" class="input-field" name="password" id="password" placeholder="Password">
-                    <i class="bx bx-lock-alt icon-left"></i>
-                    <p onclick="icon('eye','password')"><i class='bx bxs-hide' id="eye"></i></p>
-                </div>
-                <div class="input-box">
-                    <input type="password" class="input-field" name="cpassword" id="cpassword" placeholder="Confirm Password">
-                    <i class="bx bx-lock-alt icon-left"></i>
-                    <p onclick="icon('ceye','cpassword')"><i class='bx bxs-hide' id="ceye"></i></p>
-                </div>
+            <div> <span id="passwordError" style="color: red;" ></span></div>
+            <div></div>
+            <div class="input-box">
+                <input type="password" class="input-field" name="password" id="password" placeholder="Password">
+                <i class="bx bx-lock-alt icon-left"></i>
+                <p onclick="icon('eye','password')"><i class='bx bxs-hide' id="eye"></i></p>
             </div>
-            <div class="one">
-                <input type="checkbox" id="register-check">
-                <label for="register-check"> Remember Me</label>
+            <div id="password-criteria" style="margin-top: 5px; color: black; font-size: 14px;">
+                <p>*Password must include:</p>
+                <ul>
+                    <li id="length" style="color: red;">At least 8 characters</li>
+                    <li id="uppercase" style="color: red;">At least one uppercase letter</li>
+                    <li id="lowercase" style="color: red;">At least one lowercase letter</li>
+                    <li id="number" style="color: red;">At least one number</li>
+                    <li id="special" style="color: red;">At least one special character (@$!%*?&)</li>
+                </ul>
             </div>
             <div class="input-box text-center">
                 <button class="btn btn-dark bg-success submit w-50" type="submit">Create Account</button>
@@ -221,6 +236,100 @@
                 eyeicon.className = "bx bxs-hide"
             }
         }
+        function validateName() {
+            var name = document.getElementById("fname").value;
+            var nameError = document.getElementById("nameError");
+            if (name.trim() === "") {
+                nameError.innerText = "Name is required.";
+            } else {
+                nameError.innerText = "";
+            }
+        }
+
+        function validateEmail() {
+            var email = document.getElementById("email").value;
+            var existingEmails = "{{ existing_emails|safe }}";
+            var emailError = document.getElementById("emailError");
+            var regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            if (email.trim() === "" || !regex.test(email)) {
+                emailError.innerText = "Valid email is required.";
+            }else if(existingEmails.includes(email)) {
+                emailError.innerText = 'Email is already registered';
+            } else {
+                emailError.textContent = '';
+            }
+        }
+        function validateusername() {
+            var username = document.getElementById("username").value;
+            
+            var usernameError = document.getElementById("usernameError");
+            if (username.trim() === "") {
+                usernameError.innerText = "Username is required.";
+            }else {
+                usernameError.textContent = '';
+                checkusername(username);
+            }
+        }
+        function checkusername(username){
+            var user=username;
+            var existingUsers = "{{ usernames }}";
+            if(existingUsers.includes(username)) {
+                usernameError.textContent = 'Username is already registered';
+            }else {
+                usernameError.textContent = '';
+            }
+        }
+
+        function validateContact() {
+            var contact = document.getElementById("contact").value;
+            var contactError = document.getElementById("contactError");
+            if (contact.trim() === "" || isNaN(contact) || contact.length !== 10) {
+                contactError.innerText = "Valid contact number is required(10 digit).";
+            } else {
+                contactError.innerText = "";
+                checkPhone(contact)
+            }
+        }
+        function checkPhone(contact){
+            var ph=contact;
+            var existingNum = "{{ phone }}";
+            if(existingNum.includes(ph)) {
+                contactError.textContent = 'Phone number is already registered';
+            }else {
+                contactError.textContent = '';
+            }
+        }
+        document.getElementById("password").addEventListener("input", function () {
+            var password = this.value;
+
+            // Criteria elements
+            var length = document.getElementById("length");
+            var uppercase = document.getElementById("uppercase");
+            var lowercase = document.getElementById("lowercase");
+            var number = document.getElementById("number");
+            var special = document.getElementById("special");
+
+            // Regex patterns
+            var lengthCheck = password.length >= 8;
+            var uppercaseCheck = /[A-Z]/.test(password);
+            var lowercaseCheck = /[a-z]/.test(password);
+            var numberCheck = /\d/.test(password);
+            var specialCheck = /[@$!%*?&]/.test(password);
+
+            // Update criteria styles
+            length.style.color = lengthCheck ? "green" : "red";
+            uppercase.style.color = uppercaseCheck ? "green" : "red";
+            lowercase.style.color = lowercaseCheck ? "green" : "red";
+            number.style.color = numberCheck ? "green" : "red";
+            special.style.color = specialCheck ? "green" : "red";
+        });
+
+
+        document.getElementById("fname").addEventListener("input", validateName);
+        document.getElementById("email").addEventListener("input", validateEmail);
+        document.getElementById("contact").addEventListener("input", validateContact);
+        document.getElementById("username").addEventListener("input", validateusername);
+       
     </script>
 </body>
 </html>

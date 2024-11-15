@@ -27,11 +27,11 @@
         <nav class = "navbar navbar-expand-lg navbar-light bg-white text-dark py-3">
             <div class="container">
                 <a class = "navbar-brand d-flex justify-content-between align-items-center order-lg-0" href = "">
-                    <i class='bx bxs-shopping-bag' style="font-size: 25px;"></i>
-                    <span class = "text-uppercase fw-lighter ms-2">StyleSpark</span>
+                    <i class='bx bxs-home-heart' style="font-size: 25px;"></i>
+                    <span class = "text-uppercase fw-lighter ms-2 font-weight-bold">CeramiCrafts</span>
                 </a>
                 <div class = "order-lg-2 nav-btns">
-                    <a href="{% url 'userprofile' %}" class="font-weight-bold text-black-50"><img src="{{user.prf_image.url}}" alt="user" width="40" height="40" style="border-radius: 50%;"><span class="ml-1">{{user.user.username}}</span></a>
+                    <a href="{% url 'userprofile' %}" style="text-decoration: none;" class="font-weight-bold text-dark"><img src="{{user.prf_image.url}}" alt="user" width="40" height="40" style="border-radius: 50%;"><span class="ml-1">{{user.user.username}}</span></a>
                     <a href="{% url 'cart_view' %}"><button type = "button" class = "btn position-relative">
                         <i class='bx bxs-cart' style="font-size: 25px;"></i>
                     </button></a>
@@ -42,11 +42,11 @@
                 <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
                 <ul class = "navbar-nav mx-auto text-center">
                     <li class = "nav-item px-2 py-2">
-                        <a class = "nav-link text-uppercase text-dark" href = "{% url 'userindex' %}">Home</a>
+                        <a class = "nav-link text-uppercase text-dark font-weight-bold" href = "{% url 'userindex' %}">Home</a>
                     </li>
                     <li class = "nav-item px-2 py-2">
                         <div class="dropdown show">
-                            <a class="nav-link btn btn-secondary dropdown-toggle bg-white border-0 text-dark text-uppercase" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link btn btn-secondary dropdown-toggle bg-white border-0 text-dark text-uppercase font-weight-bold" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
                                 Catagories
                             </a>
                             <div class="dropdown-menu bg-white text-center border-0" aria-labelledby="dropdownMenuLink">
