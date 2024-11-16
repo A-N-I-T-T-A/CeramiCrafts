@@ -17,7 +17,6 @@ urlpatterns=[
      path('addproduct',views.addproduct,name='addproduct'),
      path('productshow',views.productshow,name='productshow'),
      path('delete_prod/<int:a>',views.delete_prod,name='delete_prod'),
-     path('userindex',views.userindex,name='userindex'),
      path('userprofile',views.userprofile,name='userprofile'),
      path('cart_view',views.cart_view,name='cart_view'),
      path('addcart/<int:a>',views.addcart,name='addcart'),
@@ -32,4 +31,5 @@ urlpatterns=[
      path('usershow',views.usershow,name='usershow'),
      path('view_order',views.view_order,name='view_order'),
      path('update/<int:a>/', views.update_product, name='update_prod'),
+     path('change-password/', views.change_password, name='change_password'),
 ]

@@ -19,9 +19,12 @@
                 <span class = "text-uppercase fw-lighter ms-2 font-weight-bold">CeramiCrafts</span>
             </a>
             <div class = "order-lg-2 nav-btns">
-                <a href="{% url 'userprofile' %}" class="font-weight-bold text-black-50"><img src="{{user.prf_image.url}}" alt="user" width="40" height="40" style="border-radius: 50%;"><span class="ml-1">{{user.user.username}}</span></a>
+                <a href="{% url 'userprofile' %}" style="text-decoration: none;" class="font-weight-bold text-dark"><img src="{{user.prf_image.url}}" alt="user" width="40" height="40" style="border-radius: 50%;"><span class="ml-1">{{user.user.username}}</span></a>
                 <a href="{% url 'cart_view' %}"><button type = "button" class = "btn position-relative">
                     <i class='bx bxs-cart' style="font-size: 25px;"></i>
+                </button></a>
+                <a href="{% url 'view_order' %}"><button type = "button" class = "btn position-relative">
+                    <i class='bx bx-list-ul' style="font-size: 25px;"></i>
                 </button></a>
             </div>
             <button class="navbar-toggler border-0 position-relative" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,7 +33,7 @@
             <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
             <ul class = "navbar-nav mx-auto text-center">
                 <li class = "nav-item px-2 py-2">
-                    <a class = "nav-link text-uppercase text-dark font-weight-bold" href = "{% url 'userindex' %}">Home</a>
+                    <a class = "nav-link text-uppercase text-dark font-weight-bold" href = "{% url 'index' %}">Home</a>
                 </li>
                 <li class = "nav-item px-2 py-2">
                     <div class="dropdown show">
@@ -87,8 +90,9 @@
                     </tr>
                 </table>
                 <div class="text-center my-2">
-                    <a href="{% url 'view_order' %}" class="btn btn-danger mr-5" class="text-center">Your Orders</a>
-                    <a href="{% url 'userindex' %}" class="btn btn-primary" class="text-center">Back</a>
+                    <a href="{% url 'change_password' %}" class="btn btn-danger mr-5" class="text-center">Change Password</a>
+                    <a href="{% url 'view_order' %}" class="btn btn-primary mr-5" class="text-center">Edit Profile</a>
+                    <a href="{% url 'index' %}" class="btn btn-secondary" class="text-center">Back</a>
                 </div>
             </div>
         </div>

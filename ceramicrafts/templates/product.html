@@ -18,38 +18,78 @@
                 <i class='bx bxs-home-heart' style="font-size: 25px;"></i>
                 <span class = "text-uppercase fw-lighter ms-2 font-weight-bold">CeramiCrafts</span>
             </a>
-            <div class = "order-lg-2 nav-btns">
-                <a href="{% url 'userprofile' %}" class="font-weight-bold text-black-50"><img src="{{user.prf_image.url}}" alt="user" width="40" height="40" style="border-radius: 50%;"><span class="ml-1">{{user.user.username}}</span></a>
-                <a href="{% url 'cart_view' %}"><button type = "button" class = "btn position-relative">
-                    <i class='bx bxs-cart' style="font-size: 25px;"></i>
-                </button></a>
-            </div>
-            <button class="navbar-toggler border-0 position-relative" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-            <ul class = "navbar-nav mx-auto text-center">
-                <li class = "nav-item px-2 py-2">
-                    <a class = "nav-link text-uppercase text-dark font-weight-bold" href = "{% url 'userindex' %}">Home</a>
-                </li>
-                <li class = "nav-item px-2 py-2">
-                    <div class="dropdown show">
-                        <a class="nav-link btn btn-secondary dropdown-toggle bg-white border-0 text-dark text-uppercase font-weight-bold" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
-                            Catagories
-                        </a>
-                        <div class="dropdown-menu bg-white text-center border-0" aria-labelledby="dropdownMenuLink">
-                            <a class="dropdown-item" href="{% url 'allcategory' %}">All products</a>
-                            {% for c in nav %}
-                                <a class="dropdown-item" href="{% url 'showcategory' c.id %}">{{c.category_name}}</a>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </li>
-                <li class = "nav-item px-2 py-2 ">
-                    <a href="{% url 'logout_user' %}" class="nav-link text-uppercase text-dark font-weight-bold">Logout</a>
-                </li>
-            </ul>
-            </div>
+            {% if User %}
+                <div class = "order-lg-2 nav-btns">
+                    <a href="{% url 'userprofile' %}" class="font-weight-bold text-black-50"><img src="{{User.prf_image.url}}" alt="user" width="40" height="40" style="border-radius: 50%;"><span class="ml-1">{{User.user.username}}</span></a>
+                    <a href="{% url 'cart_view' %}"><button type = "button" class = "btn position-relative">
+                        <i class='bx bxs-cart' style="font-size: 25px;"></i>
+                    </button></a>
+                    <a href="{% url 'view_order' %}"><button type = "button" class = "btn position-relative">
+                        <i class='bx bx-list-ul' style="font-size: 25px;"></i>
+                    </button></a>
+                </div>
+                <button class="navbar-toggler border-0 position-relative" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+                    <ul class = "navbar-nav mx-auto text-center">
+                        <li class = "nav-item px-2 py-2">
+                            <a class = "nav-link text-uppercase text-dark font-weight-bold" href = "{% url 'index' %}">Home</a>
+                        </li>
+                        <li class = "nav-item px-2 py-2">
+                            <div class="dropdown show">
+                                <a class="nav-link btn btn-secondary dropdown-toggle bg-white border-0 text-dark text-uppercase font-weight-bold" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
+                                    Catagories
+                                </a>
+                                <div class="dropdown-menu bg-white text-center border-0" aria-labelledby="dropdownMenuLink">
+                                    <a class="dropdown-item" href="{% url 'allcategory' %}">All products</a>
+                                    {% for c in nav %}
+                                        <a class="dropdown-item" href="{% url 'showcategory' c.id %}">{{c.category_name}}</a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </li>
+                        <li class = "nav-item px-2 py-2 ">
+                            <a href="{% url 'logout_user' %}" class="nav-link text-uppercase text-dark font-weight-bold">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            {% else %}
+                <div class = "order-lg-2 nav-btns">
+                    <a href="{% url 'cart_view' %}"><button type = "button" class = "btn position-relative">
+                        <i class='bx bxs-cart' style="font-size: 25px;"></i>
+                    </button></a>
+                </div>
+                <button class="navbar-toggler border-0 position-relative" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+                    <ul class = "navbar-nav mx-auto text-center">
+                        <li class = "nav-item px-2 py-2">
+                            <a class = "nav-link text-uppercase text-dark font-weight-bold" href = "{% url 'index' %}">Home</a>
+                        </li>
+                        <li class = "nav-item px-2 py-2">
+                            <div class="dropdown show">
+                                <a class="nav-link btn btn-secondary dropdown-toggle bg-white border-0 text-dark text-uppercase font-weight-bold" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
+                                    Catagories
+                                </a>
+                                <div class="dropdown-menu bg-white text-center border-0" aria-labelledby="dropdownMenuLink">
+                                    <a class="dropdown-item" href="{% url 'allcategory' %}">All products</a>
+                                    {% for c in nav %}
+                                        <a class="dropdown-item" href="{% url 'showcategory' c.id %}">{{c.category_name}}</a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </li>
+                        <li class = "nav-item px-2 py-2 ">
+                            <a href="{% url 'loginpage' %}" class="nav-link text-uppercase text-dark font-weight-bold">Login</a>
+                        </li>
+                        <li class = "nav-item px-2 py-2 ">
+                            <a href="{% url 'regpage' %}" class="nav-link text-uppercase text-dark font-weight-bold">Signup</a>
+                        </li>
+                    </ul>
+                </div>
+            {% endif %}
         </div>
     </nav>
     <div class="mt-2">
@@ -80,7 +120,7 @@
                 </table>
                 <div class="text-center my-2">
                     <a href="{% url 'addcart' product.id %}" class="btn btn-danger mr-5" class="text-center">Add to cart</a>
-                    <a href="{% url 'userindex' %}" class="btn btn-primary" class="text-center">Back</a>
+                    <a href="{% url 'index' %}" class="btn btn-primary" class="text-center">Back</a>
                 </div>
             </div>
         </div>

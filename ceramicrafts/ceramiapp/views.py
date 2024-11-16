@@ -4,50 +4,57 @@ from django.contrib.auth.models import User,auth
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
-from django.contrib.auth import authenticate,login
+from django.contrib.auth import authenticate,login,update_session_auth_hash
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 import os
 # Create your views here.
+
 def index(request):
-    cata=category.objects.all()
-    items=product.objects.all()
-    prod=product.objects.filter(id__in=order.objects.values_list('product', flat=True).distinct())
-    return render(request,"index.html",{'category':cata,'product':prod,'items':items})
-@login_required(login_url='loginpage')
-def userindex(request):
-    current=request.user.id 
-    user=userdetails.objects.get(user_id=current)
-    prod=prod=product.objects.filter(id__in=order.objects.values_list('product', flat=True).distinct())
-    items=product.objects.all()
-    cata=category.objects.all()
-    return render(request,"userindex.html",{'category':cata,'user':user,'product':prod,'items':items})
-@login_required(login_url='loginpage')
-def userprofile(request):  
-    current=request.user.id  
-    c=category.objects.all()
-    user=userdetails.objects.get(user_id=current)
-    return render(request,'userprofile.html',{'user':user,'nav':c})
-def productview(request,a):
     if request.user.is_authenticated:
         current=request.user.id  
-        c=category.objects.all()
+        cata=category.objects.all()
         user=userdetails.objects.get(user_id=current)
-        prd=product.objects.get(id=a)
-        return render(request,'product.html',{'product':prd,'nav':c,'user':user})
+        items=product.objects.all()
+        prod=product.objects.filter(id__in=order.objects.values_list('product', flat=True).distinct())
+        return render(request,"index.html",{'category':cata,'product':prod,'items':items,'User':user})
     else:
-        c=category.objects.all()
-        prd=product.objects.get(id=a)
-        return render(request,'productV.html',{'product':prd,'nav':c})
+        cata=category.objects.all()
+        items=product.objects.all()
+        prod=product.objects.filter(id__in=order.objects.values_list('product', flat=True).distinct())
+        return render(request,"index.html",{'category':cata,'product':prod,'items':items})
+    
 
 def loginpage(request):
     cata=category.objects.all()
     return render(request,"Login.html",{'category':cata})
+
+def loginuser(request):
+    if request.method == 'POST':
+        user=request.POST['username']
+        pwd=request.POST['password']
+        usr1=auth.authenticate(username=user, password=pwd)
+        if usr1 is not None:
+            if usr1.is_staff:
+                login(request,usr1)
+                return redirect('adminhome')
+            else:
+                login(request,usr1)
+                auth.login(request,usr1)
+                return redirect('index') 
+        else:
+            messages.info(request,'Invalid Username or Password!. Try again')
+            return redirect('loginpage')
+    else:
+        messages.info(request,'Invalid Username or Password!. Try again')
+        return redirect('loginpage')
+
 def forgotpage(request):
     cata=category.objects.all()
     usernames = User.objects.values_list('username', flat=True)
     return render(request,"forgotP.html",{'category':cata,'usernames':usernames})
+
 def forgot_password_submit(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -76,30 +83,6 @@ def forgot_password_submit(request):
         return redirect('loginpage')  
     return redirect('forgotpage')
 
-def loginuser(request):
-    if request.method == 'POST':
-        user=request.POST['username']
-        pwd=request.POST['password']
-        usr1=auth.authenticate(username=user, password=pwd)
-        if usr1 is not None:
-            if usr1.is_staff:
-                login(request,usr1)
-                return redirect('adminhome')
-            else:
-                login(request,usr1)
-                auth.login(request,usr1)
-                # messages.info(request,f'{usr1}')
-                return redirect('userindex')
-            # request.session['uid']= usr.id
-            
-        else:
-            messages.info(request,'Invalid Username or Password!. Try again')
-            return redirect('loginpage')
-    else:
-        messages.info(request,'Invalid Username or Password!. Try again')
-        return redirect('loginpage')
-
-
 
 def regpage(request):
     existing_emails = list(User.objects.values_list('email', flat=True))
@@ -107,6 +90,7 @@ def regpage(request):
     phones=userdetails.objects.values_list('phone', flat=True)
     cata=category.objects.all()
     return render(request,"register.html",{'category':cata,'existing_emails': existing_emails,'usernames':usernames,'phone':phones})
+
 def reguser(request):
     if request.method == 'POST':
         fname=request.POST['fname']
@@ -136,14 +120,36 @@ def reguser(request):
             messages.info(request,'Password doesn"t match!!')
             return redirect('regpage')
     return render(request,'register.html')
+
+def productview(request,a):
+    if request.user.is_authenticated:
+        current=request.user.id  
+        c=category.objects.all()
+        user=userdetails.objects.get(user_id=current)
+        prd=product.objects.get(id=a)
+        return render(request,'product.html',{'product':prd,'nav':c,'User':user})
+    else:
+        c=category.objects.all()
+        prd=product.objects.get(id=a)
+        return render(request,'product.html',{'product':prd,'nav':c})
+
+@login_required(login_url='loginpage')
+def userprofile(request):  
+    current=request.user.id  
+    c=category.objects.all()
+    user=userdetails.objects.get(user_id=current)
+    return render(request,'userprofile.html',{'user':user,'nav':c})
+
 @login_required(login_url='loginpage')
 def adminhome(request):
     #current=request.user.id 
     #user=User.objects.get(id=current)
     return render(request,"adminhome.html")
+
 @login_required(login_url='loginpage')
 def categorypage(request):
     return render(request,"addcategory.html")
+
 @login_required(login_url='loginpage')
 def addcata(request):
     if request.method == 'POST':
@@ -152,10 +158,12 @@ def addcata(request):
         c.save()
         messages.info(request,'Catagory Added')
         return redirect('categorypage')
+    
 @login_required(login_url='loginpage')
 def productpage(request):
     cata=category.objects.all()
     return render(request,"addproduct.html",{'category':cata})
+
 @login_required(login_url='loginpage')
 def addproduct(request):
     if request.method == 'POST':
@@ -170,10 +178,12 @@ def addproduct(request):
         p.save()
         messages.info(request,'Product Added')
         return redirect('productpage')
+
 @login_required(login_url='loginpage')
 def productshow(request):
     p=product.objects.all()
     return render(request,"viewproduct.html",{'product':p})
+
 @login_required(login_url='loginpage')
 def delete_prod(request,a):
     p=product.objects.get(id=a)
@@ -183,6 +193,7 @@ def delete_prod(request,a):
     up.delete()
     p.delete()
     return redirect('productshow')
+
 @login_required(login_url='loginpage')
 def update_product(request, a):
     prod = product.objects.get(id=a)
@@ -207,6 +218,7 @@ def update_product(request, a):
         return redirect('productshow')  # Replace with your product list view name
     categ = category.objects.all()  # Fetch all categories for dropdown
     return render(request, 'editproduct.html', {'product': prod, 'categories': categ})
+
 @login_required(login_url='loginpage') 
 def usershow(request):
     userd=userdetails.objects.all()
@@ -214,17 +226,19 @@ def usershow(request):
         total_quantity = order.objects.filter(user=user.user).aggregate(total=Sum('quantity'))['total'] or 0
         user.total_orders = total_quantity
     return render(request,"showuser.html",{'users':userd})
+
 @login_required(login_url='loginpage') 
 def logout_admin(request):
     auth.logout(request)
     return redirect('index')
+
 def allcategory(request):
     if request.user.is_authenticated:
         current=request.user.id 
         user=userdetails.objects.get(user_id=current)
         pd=product.objects.all()
         c=category.objects.all()
-        return render(request,"userallcate.html",{'products':pd,'user':user,'nav':c})
+        return render(request,"allcate.html",{'products':pd,'User':user,'nav':c})
     else:
         c=category.objects.all()
         pd=product.objects.all()
@@ -236,7 +250,7 @@ def showcategory(request,a):
         pd=product.objects.filter(category_id=a)
         c=category.objects.all()
         cata=category.objects.get(id=a)
-        return render(request,"usershowcate.html",{'products':pd,'category':cata,'user':user,'nav':c})
+        return render(request,"showcate.html",{'products':pd,'category':cata,'User':user,'nav':c})
     else:
         pd=product.objects.filter(category_id=a)
         c=category.objects.all()
@@ -312,6 +326,37 @@ def view_order(request):
     user=userdetails.objects.get(user_id=user.id)
     cata=category.objects.all()
     return render(request,"vieworders.html",{'products':order_items,'user':user,'category':cata})
+
+@login_required(login_url='loginpage')
+def change_password(request):
+    current=request.user.id 
+    user=userdetails.objects.get(user_id=current)
+    
+    if request.method == 'POST':
+        old_password = request.POST.get('old_password')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if not request.user.check_password(old_password):
+            messages.error(request, "Old password is incorrect.")
+            return redirect('change_password')
+
+        if new_password != confirm_password:
+            messages.error(request, "New passwords do not match.")
+            return redirect('change_password')
+
+        if old_password == new_password:
+            messages.error(request, "New password cannot be the same as the old password.")
+            return redirect('change_password')
+
+        # Set the new password
+        request.user.set_password(new_password)
+        request.user.save()
+        update_session_auth_hash(request, request.user)  # Prevent logout after password change
+        messages.success(request, "Your password has been successfully updated!")
+        return redirect('userprofile')
+
+    return render(request, 'change_passwd.html',{'user':user})
 
 @login_required(login_url='loginpage')
 def logout_user(request):

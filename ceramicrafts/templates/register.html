@@ -314,7 +314,7 @@
             var uppercaseCheck = /[A-Z]/.test(password);
             var lowercaseCheck = /[a-z]/.test(password);
             var numberCheck = /\d/.test(password);
-            var specialCheck = /[@$!%*?&]/.test(password);
+            var specialCheck = /[@$!%*?&#]/.test(password);
 
             // Update criteria styles
             length.style.color = lengthCheck ? "green" : "red";
