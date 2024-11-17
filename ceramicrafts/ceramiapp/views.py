@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate,login,update_session_auth_hash
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
+from django.core.files.storage import default_storage
 from django.db.models import Sum
 import os
 # Create your views here.
@@ -121,16 +122,16 @@ def reguser(request):
             return redirect('regpage')
     return render(request,'register.html')
 
-def productview(request,a):
+def productview(request,slug):
     if request.user.is_authenticated:
         current=request.user.id  
         c=category.objects.all()
         user=userdetails.objects.get(user_id=current)
-        prd=product.objects.get(id=a)
+        prd=product.objects.get(slug=slug)
         return render(request,'product.html',{'product':prd,'nav':c,'User':user})
     else:
         c=category.objects.all()
-        prd=product.objects.get(id=a)
+        prd=product.objects.get(slug=slug)
         return render(request,'product.html',{'product':prd,'nav':c})
 
 @login_required(login_url='loginpage')
@@ -185,18 +186,18 @@ def productshow(request):
     return render(request,"viewproduct.html",{'product':p})
 
 @login_required(login_url='loginpage')
-def delete_prod(request,a):
-    p=product.objects.get(id=a)
+def delete_prod(request,slug):
+    p=product.objects.get(slug=slug)
     if len(p.pdimage)>0:
         os.remove(p.pdimage.path)
-    up=cart.objects.filter(product_id=a)
+    up=cart.objects.filter(product__slug=slug)
     up.delete()
     p.delete()
     return redirect('productshow')
 
 @login_required(login_url='loginpage')
-def update_product(request, a):
-    prod = product.objects.get(id=a)
+def update_product(request, slug):
+    prod = product.objects.get(slug=slug)
 
     if request.method == 'POST':
         pdname = request.POST.get('pdname')
@@ -243,18 +244,18 @@ def allcategory(request):
         c=category.objects.all()
         pd=product.objects.all()
         return render(request,"allcate.html",{'products':pd,'nav':c})
-def showcategory(request,a):
+def showcategory(request,slug):
     if request.user.is_authenticated:
         current=request.user.id 
         user=userdetails.objects.get(user_id=current)
-        pd=product.objects.filter(category_id=a)
+        pd=product.objects.filter(category__slug=slug)
         c=category.objects.all()
-        cata=category.objects.get(id=a)
+        cata=category.objects.get(slug=slug)
         return render(request,"showcate.html",{'products':pd,'category':cata,'User':user,'nav':c})
     else:
-        pd=product.objects.filter(category_id=a)
+        pd=product.objects.filter(category__slug=slug)
         c=category.objects.all()
-        cata=category.objects.get(id=a)
+        cata=category.objects.get(slug=slug)
         return render(request,"showcate.html",{'products':pd,'category':cata,'nav':c})
 @login_required(login_url='loginpage')
 def cart_view(request):
@@ -267,10 +268,10 @@ def cart_view(request):
     cata=category.objects.all()
     return render(request,"cart.html",{'products':pd,'user':user,'category':cata,'number':num,'total':total_price,'subtotal':each_price})
 @login_required(login_url='loginpage')
-def addcart(request,a):
+def addcart(request,slug):
     current=request.user.id 
     user1=User.objects.get(id=current)
-    prod=product.objects.get(id=a)
+    prod=product.objects.get(slug=slug)
     prod.nos = prod.nos-1
     prod.save()
     total=1 * prod.pdprice
@@ -278,27 +279,27 @@ def addcart(request,a):
     cr.save()
     return redirect('cart_view')
 @login_required(login_url='loginpage')
-def delete_cart(request,a):
-    c=cart.objects.get(id=a)
-    pd=product.objects.get(id=c.product.pk)
+def delete_cart(request,slug):
+    pd = product.objects.get(slug=slug)
+    c = cart.objects.get(product=pd, user=request.user) 
     pd.nos = pd.nos + c.quantity
     pd.save()
     c.delete()
     return redirect('cart_view')
 @login_required(login_url='loginpage')
-def update_cart(request, p_id):
+def update_cart(request, slug):
     if request.method == "POST":
-        cart_item = get_object_or_404(cart, id=p_id)
+        pd = get_object_or_404(product, slug=slug)
+        cart_item = get_object_or_404(cart, product=pd, user=request.user)
+
         new_quantity = int(request.POST.get('quantity', 1))
         if cart_item.quantity < new_quantity:
-            pd=product.objects.get(id=cart_item.product.pk)
-            pd.nos = pd.nos - (new_quantity-1)
+            pd.nos -= (new_quantity - cart_item.quantity)
         else:
-            pd=product.objects.get(id=cart_item.product.pk)
-            pd.nos = pd.nos + (new_quantity+1)
+            pd.nos += (cart_item.quantity - new_quantity)
         pd.save()
         cart_item.quantity = new_quantity
-        cart_item.total_price = new_quantity * cart_item.product.pdprice
+        cart_item.total_price = new_quantity * pd.pdprice
         cart_item.save()
         return redirect('cart_view')
 @login_required(login_url='loginpage')
@@ -357,6 +358,52 @@ def change_password(request):
         return redirect('userprofile')
 
     return render(request, 'change_passwd.html',{'user':user})
+
+
+
+@login_required(login_url='loginpage')
+def edit_profile(request):
+    user_details = userdetails.objects.get(user=request.user)
+
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+        prf_image = request.FILES.get('prf_image')  # Retrieve the uploaded profile image
+
+        # Basic validation
+        if not first_name or not last_name or not email or not phone or not address:
+            messages.error(request, "All fields are required.")
+            return render(request, 'edit_profile.html', {'user_details': user_details})
+
+        # Update user fields
+        user = request.user
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
+        user.save()
+
+        # Update userdetails fields
+        user_details.phone = phone
+        user_details.address = address
+
+        # Handle profile image upload if provided
+        if prf_image:
+            # Delete the old image file if it exists and isn't the default image
+            if user_details.prf_image and default_storage.exists(user_details.prf_image.path):
+                user_details.prf_image.delete()
+
+            user_details.prf_image = prf_image
+
+        user_details.save()
+
+        messages.success(request, "Profile updated successfully!")
+        return redirect('userprofile')  # Redirect to the profile page
+
+    return render(request, 'edit_profile.html', {'user_details': user_details})
+
 
 @login_required(login_url='loginpage')
 def logout_user(request):

@@ -38,12 +38,12 @@
                 <li class = "nav-item px-2 py-2">
                     <div class="dropdown show">
                         <a class="nav-link btn btn-secondary dropdown-toggle bg-white border-0 text-dark text-uppercase font-weight-bold" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
-                            Catagories
+                            Categories
                         </a>
                         <div class="dropdown-menu bg-white text-center border-0" aria-labelledby="dropdownMenuLink">
                             <a class="dropdown-item" href="{% url 'allcategory' %}">All products</a>
                             {% for c in nav %}
-                                <a class="dropdown-item" href="{% url 'showcategory' c.id %}">{{c.category_name}}</a>
+                                <a class="dropdown-item" href="{% url 'showcategory' c.slug %}">{{c.category_name}}</a>
                             {% endfor %}
                         </div>
                     </div>
@@ -55,10 +55,18 @@
             </div>
         </div>
     </nav>
+    
     <div class="mt-2">
         <h1 class="text-center mt-5" style="font-family: Georgia, 'Times New Roman', Times, serif;">User Profile</h1>
     </div>
     <div class="container-fluid">
+        {% for message in messages %}
+            <h5>
+                <div class="text-danger text-center my-2" style="font-size: medium;">
+                    {{ message }}
+                </div>
+            </h5>
+        {% endfor %}
     <div class="container">
         <div class="row">
             <div class="col-sm-4 text-center">
@@ -91,7 +99,7 @@
                 </table>
                 <div class="text-center my-2">
                     <a href="{% url 'change_password' %}" class="btn btn-danger mr-5" class="text-center">Change Password</a>
-                    <a href="{% url 'view_order' %}" class="btn btn-primary mr-5" class="text-center">Edit Profile</a>
+                    <a href="{% url 'edit_profile' %}" class="btn btn-primary mr-5" class="text-center">Edit Profile</a>
                     <a href="{% url 'index' %}" class="btn btn-secondary" class="text-center">Back</a>
                 </div>
             </div>

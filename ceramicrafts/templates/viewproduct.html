@@ -36,8 +36,8 @@
                         <td>{{p.category.category_name}}</td>
                         <td><img src="{{p.pdimage.url}}" class="w-25"></td>
                         <td>
-                            <a href="{% url 'delete_prod' p.id %}" class="btn btn-sm btn-outline-dark" role="button"><i class='bx bxs-trash'>Delete</i></a>
-                            <a href="{% url 'update_prod' p.id %}" class="btn btn-sm btn-outline-dark" role="button">
+                            <a href="{% url 'delete_prod' p.slug %}" class="btn btn-sm btn-outline-dark" role="button"><i class='bx bxs-trash'>Delete</i></a>
+                            <a href="{% url 'update_prod' p.slug %}" class="btn btn-sm btn-outline-dark" role="button">
                                 <i class='bx bx-edit'>Update</i>
                             </a>                            
                         </td>

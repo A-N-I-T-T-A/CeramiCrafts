@@ -20,7 +20,7 @@
             </a>
             {% if User %}
                 <div class = "order-lg-2 nav-btns">
-                    <a href="{% url 'userprofile' %}" class="font-weight-bold text-black-50"><img src="{{User.prf_image.url}}" alt="user" width="40" height="40" style="border-radius: 50%;"><span class="ml-1">{{User.user.username}}</span></a>
+                    <a href="{% url 'userprofile' %}" style="text-decoration: none;" class="font-weight-bold text-dark"><img src="{{User.prf_image.url}}" alt="user" width="40" height="40" style="border-radius: 50%;"><span class="ml-1">{{User.user.username}}</span></a>
                     <a href="{% url 'cart_view' %}"><button type = "button" class = "btn position-relative">
                         <i class='bx bxs-cart' style="font-size: 25px;"></i>
                     </button></a>
@@ -39,12 +39,12 @@
                         <li class = "nav-item px-2 py-2">
                             <div class="dropdown show">
                                 <a class="nav-link btn btn-secondary dropdown-toggle bg-white border-0 text-dark text-uppercase font-weight-bold" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
-                                    Catagories
+                                    Categories
                                 </a>
                                 <div class="dropdown-menu bg-white text-center border-0" aria-labelledby="dropdownMenuLink">
                                     <a class="dropdown-item" href="{% url 'allcategory' %}">All products</a>
                                     {% for c in nav %}
-                                        <a class="dropdown-item" href="{% url 'showcategory' c.id %}">{{c.category_name}}</a>
+                                        <a class="dropdown-item" href="{% url 'showcategory' c.slug %}">{{c.category_name}}</a>
                                     {% endfor %}
                                 </div>
                             </div>
@@ -71,12 +71,12 @@
                         <li class = "nav-item px-2 py-2">
                             <div class="dropdown show">
                                 <a class="nav-link btn btn-secondary dropdown-toggle bg-white border-0 text-dark text-uppercase font-weight-bold" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
-                                    Catagories
+                                    Categories
                                 </a>
                                 <div class="dropdown-menu bg-white text-center border-0" aria-labelledby="dropdownMenuLink">
                                     <a class="dropdown-item" href="{% url 'allcategory' %}">All products</a>
                                     {% for c in nav %}
-                                        <a class="dropdown-item" href="{% url 'showcategory' c.id %}">{{c.category_name}}</a>
+                                        <a class="dropdown-item" href="{% url 'showcategory' c.slug %}">{{c.category_name}}</a>
                                     {% endfor %}
                                 </div>
                             </div>
@@ -119,7 +119,7 @@
                     </tr>
                 </table>
                 <div class="text-center my-2">
-                    <a href="{% url 'addcart' product.id %}" class="btn btn-danger mr-5" class="text-center">Add to cart</a>
+                    <a href="{% url 'addcart' product.slug %}" class="btn btn-danger mr-5" class="text-center">Add to cart</a>
                     <a href="{% url 'index' %}" class="btn btn-primary" class="text-center">Back</a>
                 </div>
             </div>

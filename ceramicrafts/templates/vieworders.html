@@ -39,12 +39,12 @@
                 <li class = "nav-item px-2 py-2">
                     <div class="dropdown show">
                         <a class="nav-link btn btn-secondary dropdown-toggle bg-secondary border-0 text-dark text-uppercase font-weight-bold" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
-                            Catagories
+                            Categories
                         </a>
                         <div class="dropdown-menu bg-secondary text-center border-0" aria-labelledby="dropdownMenuLink">
                             <a class="dropdown-item" href="{% url 'allcategory' %}">All products</a>
                             {% for c in category %}
-                                <a class="dropdown-item" href="{% url 'showcategory' c.id %}">{{c.category_name}}</a>
+                                <a class="dropdown-item" href="{% url 'showcategory' c.slug %}">{{c.category_name}}</a>
                             {% endfor %}
                         </div>
                     </div>

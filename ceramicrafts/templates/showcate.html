@@ -51,12 +51,12 @@
                             <li class = "nav-item px-2 py-2">
                                 <div class="dropdown show">
                                     <a class="nav-link btn btn-secondary dropdown-toggle bg-white border-0 text-dark text-uppercase font-weight-bold" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
-                                        Catagories
+                                        Categories
                                     </a>
                                     <div class="dropdown-menu bg-white text-center border-0" aria-labelledby="dropdownMenuLink">
                                         <a class="dropdown-item" href="{% url 'allcategory' %}">All products</a>
                                         {% for c in nav %}
-                                            <a class="dropdown-item" href="{% url 'showcategory' c.id %}">{{c.category_name}}</a>
+                                            <a class="dropdown-item" href="{% url 'showcategory' c.slug %}">{{c.category_name}}</a>
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -83,12 +83,12 @@
                             <li class = "nav-item px-2 py-2">
                                 <div class="dropdown show">
                                     <a class="nav-link btn btn-secondary dropdown-toggle bg-white border-0 text-dark text-uppercase font-weight-bold" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
-                                        Catagories
+                                        Categories
                                     </a>
                                     <div class="dropdown-menu bg-white text-center border-0" aria-labelledby="dropdownMenuLink">
                                         <a class="dropdown-item" href="{% url 'allcategory' %}">All products</a>
                                         {% for c in nav %}
-                                            <a class="dropdown-item" href="{% url 'showcategory' c.id %}">{{c.category_name}}</a>
+                                            <a class="dropdown-item" href="{% url 'showcategory' c.slug %}">{{c.category_name}}</a>
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -115,7 +115,7 @@
                             <h5 class="card-title">{{pd.pdname}}</h5>
                             <p class="card-text">{{pd.pd_desc}}</p>
                             <p class="card-text">{{pd.pdprice}}</p>
-                            <p class="card-text"><a href="{% url 'productview' pd.id %}" class="btn btn-success">View More</a></p>
+                            <p class="card-text"><a href="{% url 'productview' pd.slug %}" class="btn btn-success">View More</a></p>
                             </div>
                         </div>
                     </div>

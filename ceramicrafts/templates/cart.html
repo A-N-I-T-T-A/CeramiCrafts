@@ -34,17 +34,17 @@
             <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
             <ul class = "navbar-nav mx-auto text-center">
                 <li class = "nav-item px-2 py-2">
-                    <a class = "nav-link text-uppercase text-dark font-weight-bold" href = "{% url 'userindex' %}">Home</a>
+                    <a class = "nav-link text-uppercase text-dark font-weight-bold" href = "{% url 'index' %}">Home</a>
                 </li>
                 <li class = "nav-item px-2 py-2">
                     <div class="dropdown show">
                         <a class="nav-link btn btn-secondary dropdown-toggle bg-white border-0 text-dark text-uppercase font-weight-bold" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
-                            Catagories
+                            Categories
                         </a>
                         <div class="dropdown-menu bg-white text-center border-0" aria-labelledby="dropdownMenuLink">
                             <a class="dropdown-item" href="{% url 'allcategory' %}">All products</a>
                             {% for c in category %}
-                                <a class="dropdown-item" href="{% url 'showcategory' c.id %}">{{c.category_name}}</a>
+                                <a class="dropdown-item" href="{% url 'showcategory' c.slug %}">{{c.category_name}}</a>
                             {% endfor %}
                         </div>
                     </div>
@@ -83,14 +83,14 @@
                                 <td><img src="{{p.product.pdimage.url}}" class="w-25"></td>
                                 <td>{{p.product.pd_desc}}</td>
                                 <td>
-                                    <form method="post" action="{% url 'update_cart' p.id %}">
+                                    <form method="post" action="{% url 'update_cart' p.product.slug %}">
                                         {% csrf_token %}
                                         <input type="number" name="quantity" value="{{ p.quantity }}" min="1" style="width: 60px;" onchange="this.form.submit()">
                                     </form>
                                 </td>
                                 <td>{{ p.total_price }}</td>
                                 <td>
-                                    <a href="{% url 'delete_cart' p.id %}" class="btn btn-sm btn-outline-dark" role="button">Remove</a>
+                                    <a href="{% url 'delete_cart' p.product.slug %}" class="btn btn-sm btn-outline-dark" role="button">Remove</a>
                                 </td>
                             </tr>
                         {% endfor %}
