@@ -103,9 +103,13 @@ def reguser(request):
         address=request.POST['address']
         phone=request.POST['contact']
         image=request.FILES.get('profile')
+
         if pwd==cpwd:
             if User.objects.filter(username=user).exists():
                 messages.info(request,'This username already exists!!')
+                return redirect('regpage')
+            elif User.objects.filter(email=email).exists():
+                messages.error(request, 'User with this email already exists.')
                 return redirect('regpage')
             else:
                 usr=User.objects.create_user(first_name=fname,last_name=lname,username=user,email=email,password=pwd)
@@ -113,9 +117,6 @@ def reguser(request):
 
                 det=userdetails(address=address,phone=phone,prf_image=image,user=usr)
                 det.save()
-                # subject='Your ecommerce username and password'
-                # message2= 'Username:'+user+'\n'+'Password:'+pwd
-                # send_mail(subject,message2,settings.EMAIL_HOST_USER,[email])
                 return redirect('loginpage')
         else:
             messages.info(request,'Password doesn"t match!!')
@@ -154,10 +155,14 @@ def categorypage(request):
 @login_required(login_url='loginpage')
 def addcata(request):
     if request.method == 'POST':
-        cata=request.POST['cname']
-        c=category(category_name=cata)
-        c.save()
-        messages.info(request,'Catagory Added')
+        cata=request.POST['cname'].strip()
+        if category.objects.filter(category_name__iexact=cata).exists():
+            messages.error(request, f"The category '{cata}' already exists.")
+        else:
+            c = category(category_name=cata)
+            c.save()
+            messages.success(request, "Category added successfully.")
+        
         return redirect('categorypage')
     
 @login_required(login_url='loginpage')
@@ -168,16 +173,20 @@ def productpage(request):
 @login_required(login_url='loginpage')
 def addproduct(request):
     if request.method == 'POST':
-        pname=request.POST['pname']
-        des=request.POST['pdesc']
+        pname=request.POST['pname'].strip()
+        des=request.POST['pdesc'].strip()
         sel=request.POST['sel']
         c1=category.objects.get(id=sel)
         qty=request.POST['Nos']
         price=request.POST['price']
         image=request.FILES.get('prdimage')
-        p=product(pdname=pname,nos=qty,pdprice=price,pd_desc=des,pdimage=image,category=c1)
-        p.save()
-        messages.info(request,'Product Added')
+        if product.objects.filter(pdname__iexact=pname,category=c1).exists():
+            messages.error(request, f"The product '{pname}' already exists in the selected category.")
+        else:
+            p = product(pdname=pname, nos=qty, pdprice=price, pd_desc=des, pdimage=image, category=c1)
+            p.save()
+            messages.success(request, "Product added successfully.")
+
         return redirect('productpage')
 
 @login_required(login_url='loginpage')
@@ -244,6 +253,7 @@ def allcategory(request):
         c=category.objects.all()
         pd=product.objects.all()
         return render(request,"allcate.html",{'products':pd,'nav':c})
+    
 def showcategory(request,slug):
     if request.user.is_authenticated:
         current=request.user.id 
@@ -257,6 +267,7 @@ def showcategory(request,slug):
         c=category.objects.all()
         cata=category.objects.get(slug=slug)
         return render(request,"showcate.html",{'products':pd,'category':cata,'nav':c})
+
 @login_required(login_url='loginpage')
 def cart_view(request):
     current=request.user.id 
@@ -267,17 +278,33 @@ def cart_view(request):
     user=userdetails.objects.get(user_id=current)
     cata=category.objects.all()
     return render(request,"cart.html",{'products':pd,'user':user,'category':cata,'number':num,'total':total_price,'subtotal':each_price})
+
 @login_required(login_url='loginpage')
 def addcart(request,slug):
     current=request.user.id 
     user1=User.objects.get(id=current)
     prod=product.objects.get(slug=slug)
-    prod.nos = prod.nos-1
-    prod.save()
-    total=1 * prod.pdprice
-    cr=cart(user=user1,product=prod,total_price=total)
-    cr.save()
+    existing_cart_item = cart.objects.filter(user=user1, product=prod).first()
+    if existing_cart_item:
+        existing_cart_item.quantity += 1  
+        existing_cart_item.total_price = existing_cart_item.quantity * prod.pdprice
+        existing_cart_item.save()
+        prod.nos -= 1  
+        prod.save()
+    else:
+        if prod.nos > 0:
+            quantity = 1  
+            total = quantity * prod.pdprice
+            new_cart_item = cart(user=user1, product=prod, quantity=quantity, total_price=total)
+            new_cart_item.save()
+            prod.nos -= quantity
+            prod.save()
+        else:
+            # Handle out-of-stock case
+            messages.error(request, "This product is out of stock.")
+            return redirect('product_detail', slug=slug)
     return redirect('cart_view')
+
 @login_required(login_url='loginpage')
 def delete_cart(request,slug):
     pd = product.objects.get(slug=slug)
@@ -286,6 +313,7 @@ def delete_cart(request,slug):
     pd.save()
     c.delete()
     return redirect('cart_view')
+
 @login_required(login_url='loginpage')
 def update_cart(request, slug):
     if request.method == "POST":
@@ -302,6 +330,7 @@ def update_cart(request, slug):
         cart_item.total_price = new_quantity * pd.pdprice
         cart_item.save()
         return redirect('cart_view')
+    
 @login_required(login_url='loginpage')
 def create_order(request):
     if request.method == "POST":
@@ -320,6 +349,7 @@ def create_order(request):
         
         return redirect("view_order")  # Redirect to homepage or order summary page
     return redirect("cart_view")
+
 @login_required(login_url='loginpage')
 def view_order(request):
     user = request.user

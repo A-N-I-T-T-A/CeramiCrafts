@@ -139,7 +139,7 @@
                             </a>
                           
                             <div class="dropdown-menu bg-white text-center border-0" aria-labelledby="dropdownMenuLink">
-                                <a class="dropdown-item" href="{% url 'allcategory' %}">All products</a>
+                                <a class="dropdown-item" href="{% url 'allcategory' %}">All Decors</a>
                                 {% for c in category %}
                                     <a class="dropdown-item" href="{% url 'showcategory' c.id %}">{{c.category_name}}</a>
                                 {% endfor %}
