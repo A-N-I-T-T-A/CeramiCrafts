@@ -77,6 +77,7 @@
                             <td>Name</td>
                             <td>Quantity</td>
                             <td>Amount</td>
+                            <td>Order Date</td>
                         </tr>
                     </thead>
                     <tbody class="bg-light">
@@ -86,6 +87,7 @@
                                 <td>{{p.product.pdname}}</td>
                                 <td>{{p.quantity}}</td>
                                 <td>{{ p.total }}</td>
+                                <td>{{ p.created_at|date:"Y-m-d" }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>

@@ -302,7 +302,7 @@ def addcart(request,slug):
         else:
             # Handle out-of-stock case
             messages.error(request, "This product is out of stock.")
-            return redirect('product_detail', slug=slug)
+            return render(request, 'product.html', {'product': prod})
     return redirect('cart_view')
 
 @login_required(login_url='loginpage')

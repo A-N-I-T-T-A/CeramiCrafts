@@ -96,6 +96,13 @@
         <h1 class="text-center mt-5" style="font-family: Georgia, 'Times New Roman', Times, serif;"></h1>
     </div>
     <div class="container-fluid">
+        {% for message in messages %}
+            <h5>
+                <div class=" text-danger text-center my-2" style="font-size: medium;">
+                    {{ message }}
+                </div>
+            </h5>
+        {% endfor %}
     <div class="container">
         <div class="row">
             <div class="col-sm-4 text-center">
@@ -116,6 +123,15 @@
                     <tr>
                         <td><label for="fname">Price:</label></td>
                         <td>{{product.pdprice}}</td>
+                    </tr>
+                    <tr>
+                        {% if product.nos == 0 %}
+                            <td><label for="fname">Status:</label></td>
+                            <td>Out of Stock</td>
+                        {% else %}
+                            <td><label for="fname">Status:</label></td>
+                            <td>Available</td>
+                        {% endif %}
                     </tr>
                 </table>
                 <div class="text-center my-2">
