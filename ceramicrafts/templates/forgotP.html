@@ -167,125 +167,42 @@
         <form id="forgot-password-form" action="{% url 'forgot_password_submit' %}" method="post" novalidate>
             {% csrf_token %}
             <div class="input-box">
-                <div><span id="usernameError" style="color: red;" ></span></div>
-                <input type="text" class="input-field" id="username" name="username" id="username"  placeholder="Username" required>
-                <i class='bx bxs-user'></i>     
+                <div><span id="usernameError" style="color: red;"></span></div>
+                <input type="email" class="input-field" id="email" name="email" placeholder="Email" required>
+                <i class='bx bxs-user'></i>
             </div>
             <div class="input-box">
-                <input type="password" class="input-field" id="new_password" name="new_password" placeholder="New Password" minlength="8" require>
-                <i class="bx bx-lock-alt icon-left"></i>
-                <p onclick="icon('eye','new_password')"><i class='bx bxs-hide' id="eye"></i></p>
-            </div>
-            <div><span id="confirmPasswordError" style="color: red;" ></span></div>
-            <div class="input-box">
-                <input type="password" class="input-field" id="confirm_password" name="confirm_password" placeholder="Confirm Password" minlength="8" required>
-                <i class="bx bx-lock-alt"></i>
-                <p onclick="icon('eye','confirm_password')"><i class='bx bxs-hide' id="eye"></i></p>
-            </div>
-            <div id="password-criteria" style="margin-top: 5px; color: black; font-size: 14px;">
-                <p>*Password must include:</p>
-                <ul>
-                    <li id="length" style="color: red;">At least 8 characters</li>
-                    <li id="uppercase" style="color: red;">At least one uppercase letter</li>
-                    <li id="lowercase" style="color: red;">At least one lowercase letter</li>
-                    <li id="number" style="color: red;">At least one number</li>
-                    <li id="special" style="color: red;">At least one special character (@$!%*?&)</li>
-                </ul>
-            </div>
-            <div class="input-box">
-                <button class="btn btn-dark bg-warning submit" type="submit">Change Password</button>
+                <button class="btn btn-dark bg-warning submit" type="submit">Submit</button>
             </div>
         </form>
     </div>
-    <section id="footer">
-        <div class="container-fluid mt-5" style="background-color: beige;">
-            <footer class="py-3 my-3">
-              <div class="border-bottom">
-                <ul class="nav justify-content-center">
-                  <li class="nav-item"><a href="{% url 'index' %}" class="nav-link px-2 text-muted">Home</a></li>
-                  <li class="nav-item"><a href="{% url 'allcategory' %}" class="nav-link px-2 text-muted">All Decors</a></li>
-                </ul>
-                <ul class="nav justify-content-center mb-2">
-                  <li class="nav-item">
-                      <a><i class='bx bxl-facebook-circle bx-sm px-0 pt-2'></i></a>&nbsp;&nbsp;<a><i class='bx bxl-linkedin-square  bx-sm px-2 pt-2' ></i></a>&nbsp;&nbsp;<a><i class='bx bxl-instagram-alt bx-sm pt-2 px-2'></i></a>&nbsp;&nbsp;<a ><i class='bx bxl-twitter bx-sm pt-2 px-2' ></i></a>
-                    </li>
-                </ul>
-              </div>
-              <p class="text-center text-muted">© 2024 CeramiCrafts, Inc</p>
-            </footer>
-          </div>  
-    </section>
 
     <script>
-        function icon(eyeid,passid){
-            let eyeicon=document.getElementById(eyeid);
-            let pass=document.getElementById(passid);
-            if(pass.type == "password"){
-                pass.type ="text";
-                eyeicon.className = "bx bxs-show"
-            }else{
-                pass.type = "password"
-                eyeicon.className = "bx bxs-hide"
+        document.getElementById("forgot-password-form").addEventListener("submit", function (e) {
+            e.preventDefault(); // Prevent default form submission
+            if (validateEmail()) {
+                this.submit(); // Only submit if validation passes
             }
-        }
-        function validateusername() {
-            var username = document.getElementById("username").value;
-            
-            var usernameError = document.getElementById("usernameError");
-            if (username.trim() === "") {
-                usernameError.innerText = "Username is required.";
-            }else {
-                usernameError.textContent = '';
-                checkusername(username);
-            }
-        }
-        function checkusername(username) {
-            var user = username.trim(); 
-            var existingUsers = "{{ usernames }}"; 
-            if (existingUsers.includes(user)) {
-                usernameError.textContent = '';  // Clear any previous error
-            } else {
-                usernameError.textContent = 'Username does not exist';  // Show error if not found
-            }
-        }
-        document.getElementById("new_password").addEventListener("input", function () {
-            var password = this.value;
-
-            // Criteria elements
-            var length = document.getElementById("length");
-            var uppercase = document.getElementById("uppercase");
-            var lowercase = document.getElementById("lowercase");
-            var number = document.getElementById("number");
-            var special = document.getElementById("special");
-
-            // Regex patterns
-            var lengthCheck = password.length >= 8;
-            var uppercaseCheck = /[A-Z]/.test(password);
-            var lowercaseCheck = /[a-z]/.test(password);
-            var numberCheck = /\d/.test(password);
-            var specialCheck = /[@$!%*?&#]/.test(password);
-
-            // Update criteria styles
-            length.style.color = lengthCheck ? "green" : "red";
-            uppercase.style.color = uppercaseCheck ? "green" : "red";
-            lowercase.style.color = lowercaseCheck ? "green" : "red";
-            number.style.color = numberCheck ? "green" : "red";
-            special.style.color = specialCheck ? "green" : "red";
         });
-        function validateConfirmPassword() {
-            var password = document.getElementById("new_password").value;
-            var confirmPassword = document.getElementById("confirm_password").value;
-            var confirmPasswordError = document.getElementById("confirmPasswordError");
-
-            if (password !== confirmPassword) {
-                confirmPasswordError.innerText = "Passwords do not match.";
+    
+        function validateEmail() {
+            const emailField = document.getElementById("email");
+            const usernameError = document.getElementById("usernameError");
+            const email = emailField.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+            if (email === "") {
+                usernameError.textContent = "Email is required.";
+                return false;
+            } else if (!emailRegex.test(email)) {
+                usernameError.textContent = "Invalid email format.";
+                return false;
             } else {
-                confirmPasswordError.innerText = "";
+                usernameError.textContent = "";
+                return true;
             }
         }
-        
-        document.getElementById("username").addEventListener("input", validateusername);
-        document.getElementById("confirm_password").addEventListener("input", validateConfirmPassword);
     </script>
+    
 </body>
 </html>

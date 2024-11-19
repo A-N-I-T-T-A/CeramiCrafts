@@ -15,6 +15,13 @@
 </style>
         <table border="1px" class="table text-center">
             <tr><h1 class="py-2 text-center bg-info mt-4" style="font-family: Georgia, 'Times New Roman', Times, serif;">All Users Details</h1></tr>
+            {% for message in messages %}
+                <h5>
+                    <div class=" container text-center font-weight-bolder alert alert-success" style="font-size: large;">
+                        {{ message }}
+                    </div>
+                </h5>
+            {% endfor %} 
             <thead class="text-white bg-primary" style="font-weight: bold;">
                 <tr>
                     <td>Username</td>
@@ -30,7 +37,7 @@
                         <td>{{u.user.email}}</td>
                         <td>{{ u.total_orders }} Items</td>
                         <td>
-                            <a href="" class="btn btn-sm btn-outline-dark" role="button">DELETE</a>
+                            <a href="{% url 'delete_user' u.slug %}" class="btn btn-sm btn-outline-dark" role="button">DELETE</a>
                         </td>
                     </tr>
                 {% endfor %}

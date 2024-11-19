@@ -17,7 +17,7 @@
         <div class="container">
             <a class = "navbar-brand d-flex justify-content-between align-items-center order-lg-0" href = "">
                 <i class='bx bxs-home-heart' style="font-size: 25px;"></i>
-                <span class = "text-uppercase fw-lighter ms-2">CeramiCrafts</span>
+                <span class = "text-uppercase fw-lighter ms-2 font-weight-bold">CeramiCrafts</span>
             </a>
             <div class = "order-lg-2 nav-btns">
                 <a href="{% url 'userprofile' %}" style="text-decoration: none;" class="font-weight-bold text-dark"><img src="{{user.prf_image.url}}" alt="user" width="40" height="40" style="border-radius: 50%;"><span class="ml-1">{{user.user.username}}</span></a>
@@ -57,6 +57,7 @@
         </div>
     </nav>
     <div class="pt-5 pb-5 container">
+        <h1 class="pt-5 text-center" style="font-family: Georgia, 'Times New Roman', Times, serif;">Shopping Cart</h1>
         {% for message in messages %}
             <h5>
                 <div class=" text-danger text-center my-2" style="font-size: medium;">
@@ -64,16 +65,16 @@
                 </div>
             </h5>
         {% endfor %}
-        <h1 class="pt-5 text-center" style="font-family: Georgia, 'Times New Roman', Times, serif;">Shopping Cart</h1>
         <div class="row">
             <div class="col-sm-9">
                 <table border="1px" class="table text-center">
                     <thead class="text-white bg-primary" style="font-weight: bold;">
                         <tr>
                             <td>image</td>
-                            <td>Description</td>
-                            <td>Nos</td>
+                            <td>Category</td>
                             <td>Price</td>
+                            <td>Quantity</td>
+                            <td>Total</td>
                             <td>Action</td>
                         </tr>
                     </thead>
@@ -81,7 +82,8 @@
                         {% for p in products %}
                             <tr>
                                 <td><img src="{{p.product.pdimage.url}}" class="w-25"></td>
-                                <td>{{p.product.pd_desc}}</td>
+                                <td>{{p.product.category.category_name}}</td>
+                                <td>{{p.product.pdprice}}</td>
                                 <td>
                                     <form method="post" action="{% url 'update_cart' p.product.slug %}">
                                         {% csrf_token %}
@@ -102,7 +104,7 @@
                 <h5 class="card-title">Your Cart Total</h5>
                 <p class="card-text">Total Items: {{number}}</p>
                 <p class="card-text">Total Amount:</p>
-                <p class="card-text text-danger font-weight-bold">{{subtotal}}</p>
+                <p class="card-text text-danger font-weight-bold">₹ {{subtotal}}</p>
                 </div>
             </div>
         </div>
@@ -117,16 +119,16 @@
                     <h5 class="text-uppercase bg-primary">cart total</h5>
                     <div class="d-flex justify-content-between">
                         <h6>Subtotal</h6>
-                        <p>{{subtotal}}</p>
+                        <p>₹ {{subtotal}}</p>
                     </div>
                     <div class="d-flex justify-content-between">
                         <h6>Shipping</h6>
-                        <p>40.00</p>
+                        <p>₹ 40.00</p>
                     </div>
                     <hr class="second-hr bg-dark">
                     <div class="d-flex justify-content-between">
                         <h6>Total</h6>
-                        <p>{{total}}</p>
+                        <p>₹ {{total}}</p>
                     </div>
                     <div class="text-right">
                     <button class="btn text-uppercase btn-sm" data-toggle="modal" data-target="#order">Proceed to checkout</button>
@@ -145,7 +147,7 @@
                         </div>
                         <div class="modal-body text-center">
                             <h2 class="pt-3">Order Summary</h2>
-                            <p>Total Amount: {{ total }}</p>
+                            <p>Total Amount: ₹ {{ total }}</p>
                             <input type="hidden" name="user_id" value="{{ user.id }}">
                             <!-- Add any other hidden fields as needed for cart_id, product_id, etc. -->
                         </div>

@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.files.storage import default_storage
 from django.db.models import Sum
 import os
+import random
 # Create your views here.
 
 def index(request):
@@ -17,14 +18,23 @@ def index(request):
         current=request.user.id  
         cata=category.objects.all()
         user=userdetails.objects.get(user_id=current)
-        items=product.objects.all()
+        items = product.objects.all()
+        category_products = {
+            category: product.objects.filter(category_id=category.id)[:3]  # Top 3 products per category
+            for category in cata
+        }
+
         prod=product.objects.filter(id__in=order.objects.values_list('product', flat=True).distinct())
-        return render(request,"index.html",{'category':cata,'product':prod,'items':items,'User':user})
+        return render(request,"index.html",{'category':cata,'product':prod,'items':items,'User':user,'category_products': category_products})
     else:
         cata=category.objects.all()
         items=product.objects.all()
+        category_products = {
+            category: product.objects.filter(category_id=category.id)[:3]  # Top 3 products per category
+            for category in cata
+        }
         prod=product.objects.filter(id__in=order.objects.values_list('product', flat=True).distinct())
-        return render(request,"index.html",{'category':cata,'product':prod,'items':items})
+        return render(request,"index.html",{'category':cata,'product':prod,'items':items,'category_products': category_products})
     
 
 def loginpage(request):
@@ -52,36 +62,43 @@ def loginuser(request):
         return redirect('loginpage')
 
 def forgotpage(request):
-    cata=category.objects.all()
-    usernames = User.objects.values_list('username', flat=True)
-    return render(request,"forgotP.html",{'category':cata,'usernames':usernames})
+    cata = category.objects.all()
+    email = User.objects.values_list('email', flat=True)
+    email_list = ",".join(email)  # Convert to a single string
+    return render(request, "forgotP.html", {'category': cata, 'usernames': email_list})
 
 def forgot_password_submit(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        new_password = request.POST.get('new_password')
-        confirm_password = request.POST.get('confirm_password')
-
+        email = request.POST.get('email')
         try:
-            user = User.objects.get(username=username)
-
-        except User.DoesNotExist:
-            messages.error(request, "Username does not exist.")
-            return redirect('forgot_password')  
+            user = User.objects.get(email=email)
+            
+            # Generate a new random password
+            password = ''.join(random.choices('0123456789', k=8))
+            
+            # Set the new password and save the user
+            user.set_password(password)
+            user.save()
+            
+            # Send email with the new password
+            subject = 'Your Password Has Been Changed'
+            message = (
+                f"Dear {user.first_name},\n\n"
+                f"Your password has been reset. Here are your new login credentials:\n"
+                f"Username: {user.username}\n"
+                f"Password: {password}\n\n"
+                f"You can now log in using the new password.\n\n"
+                f"Regards,\nCeramiCrafts Team"
+            )
+            send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email])
+            
+            messages.success(request, "A new password has been sent to your email. You can now log in.")
+            return redirect('loginpage')
         
-        if new_password != confirm_password:
-            messages.error(request, "Passwords do not match.")
+        except User.DoesNotExist:
+            messages.error(request, "No account found with that email address.")
             return redirect('forgot_password')
-
-        if len(new_password) < 8:
-            messages.error(request, "Password must be at least 8 characters long.")
-            return redirect('forgot_password')
-
-        user.password = make_password(new_password)
-        user.save()
-
-        messages.success(request, "Password updated successfully! You can now log in.")
-        return redirect('loginpage')  
+    
     return redirect('forgotpage')
 
 
@@ -99,28 +116,23 @@ def reguser(request):
         user=request.POST['username']
         email=request.POST['email']
         pwd=request.POST['password']
-        cpwd=request.POST['cpassword']
         address=request.POST['address']
         phone=request.POST['contact']
         image=request.FILES.get('profile')
 
-        if pwd==cpwd:
-            if User.objects.filter(username=user).exists():
-                messages.info(request,'This username already exists!!')
-                return redirect('regpage')
-            elif User.objects.filter(email=email).exists():
-                messages.error(request, 'User with this email already exists.')
-                return redirect('regpage')
-            else:
-                usr=User.objects.create_user(first_name=fname,last_name=lname,username=user,email=email,password=pwd)
-                usr.save()
-
-                det=userdetails(address=address,phone=phone,prf_image=image,user=usr)
-                det.save()
-                return redirect('loginpage')
-        else:
-            messages.info(request,'Password doesn"t match!!')
+        if User.objects.filter(username=user).exists():
+            messages.info(request,'This username already exists!!')
             return redirect('regpage')
+        elif User.objects.filter(email=email).exists():
+            messages.error(request, 'User with this email already exists.')
+            return redirect('regpage')
+        else:
+            usr=User.objects.create_user(first_name=fname,last_name=lname,username=user,email=email,password=pwd)
+            usr.save()
+
+            det=userdetails(address=address,phone=phone,prf_image=image,user=usr)
+            det.save()
+            return redirect('loginpage')
     return render(request,'register.html')
 
 def productview(request,slug):
@@ -238,6 +250,18 @@ def usershow(request):
     return render(request,"showuser.html",{'users':userd})
 
 @login_required(login_url='loginpage') 
+def delete_user(request,slug):
+    user_detail = userdetails.objects.get(slug=slug)
+    user_cart_items = cart.objects.filter(user_id=user_detail.user.id)
+    if len(user_detail.prf_image)>0:
+        os.remove(user_detail.prf_image.path)
+    user_cart_items.delete()
+    user_detail.delete()
+    user_detail.user.delete()
+    messages.success(request, "User deleted successfully.")
+    return redirect('usershow')
+
+@login_required(login_url='loginpage') 
 def logout_admin(request):
     auth.logout(request)
     return redirect('index')
@@ -253,7 +277,8 @@ def allcategory(request):
         c=category.objects.all()
         pd=product.objects.all()
         return render(request,"allcate.html",{'products':pd,'nav':c})
-    
+
+
 def showcategory(request,slug):
     if request.user.is_authenticated:
         current=request.user.id 
@@ -268,6 +293,7 @@ def showcategory(request,slug):
         cata=category.objects.get(slug=slug)
         return render(request,"showcate.html",{'products':pd,'category':cata,'nav':c})
 
+
 @login_required(login_url='loginpage')
 def cart_view(request):
     current=request.user.id 
@@ -278,6 +304,7 @@ def cart_view(request):
     user=userdetails.objects.get(user_id=current)
     cata=category.objects.all()
     return render(request,"cart.html",{'products':pd,'user':user,'category':cata,'number':num,'total':total_price,'subtotal':each_price})
+
 
 @login_required(login_url='loginpage')
 def addcart(request,slug):
@@ -305,6 +332,7 @@ def addcart(request,slug):
             return render(request, 'product.html', {'product': prod})
     return redirect('cart_view')
 
+
 @login_required(login_url='loginpage')
 def delete_cart(request,slug):
     pd = product.objects.get(slug=slug)
@@ -313,7 +341,6 @@ def delete_cart(request,slug):
     pd.save()
     c.delete()
     return redirect('cart_view')
-
 @login_required(login_url='loginpage')
 def update_cart(request, slug):
     if request.method == "POST":
@@ -321,15 +348,43 @@ def update_cart(request, slug):
         cart_item = get_object_or_404(cart, product=pd, user=request.user)
 
         new_quantity = int(request.POST.get('quantity', 1))
-        if cart_item.quantity < new_quantity:
+
+        # Total stock available including the user's current cart quantity
+        available_for_cart = pd.nos + cart_item.quantity
+
+        # If the requested new quantity exceeds the total available stock
+        if new_quantity > available_for_cart:
+            messages.warning(
+                request,
+                f"Sorry, we only have {available_for_cart} items available in total. Updating your cart to the maximum available quantity."
+            )
+            new_quantity = available_for_cart
+
+        # If the user sets quantity to zero, remove the item from the cart
+        if new_quantity == 0:
+            pd.nos += cart_item.quantity  # Restore stock
+            pd.save()
+            cart_item.delete()  # Remove the item from the cart
+            messages.success(request, "Item removed from cart.")
+            return redirect('cart_view')
+
+        # Adjust stock based on the updated quantity
+        if new_quantity > cart_item.quantity:
             pd.nos -= (new_quantity - cart_item.quantity)
-        else:
+        elif new_quantity < cart_item.quantity:
             pd.nos += (cart_item.quantity - new_quantity)
+
         pd.save()
+
+        # Update the cart item
         cart_item.quantity = new_quantity
         cart_item.total_price = new_quantity * pd.pdprice
         cart_item.save()
+ 
         return redirect('cart_view')
+
+
+
     
 @login_required(login_url='loginpage')
 def create_order(request):
@@ -353,10 +408,31 @@ def create_order(request):
 @login_required(login_url='loginpage')
 def view_order(request):
     user = request.user
-    order_items=order.objects.filter(user=user)
-    user=userdetails.objects.get(user_id=user.id)
-    cata=category.objects.all()
-    return render(request,"vieworders.html",{'products':order_items,'user':user,'category':cata})
+    # Fetch the orders for the user grouped by date, and annotate them with the total amount.
+    order_items = order.objects.filter(user=user).values('created_at__date').annotate(total_amount=Sum('total')).order_by('created_at__date')
+    orders_by_date = {}
+
+    # Group orders by date and calculate total amount for each date
+    for order_date in order_items:
+        date = order_date['created_at__date']
+        orders = order.objects.filter(user=user, created_at__date=date)
+        
+        # Calculate the total amount for this date
+        total_amount = sum(order.total for order in orders)
+        
+        # Store both orders and total_amount in the dictionary
+        orders_by_date[date] = {'orders': orders, 'total_amount': total_amount}
+
+    # Fetch user details and categories to pass to the template
+    user_details = userdetails.objects.get(user_id=user.id)
+    categories = category.objects.all()
+
+    # Render the template with the context
+    return render(request, "vieworders.html", {
+        'orders_by_date': orders_by_date, 
+        'user': user_details, 
+        'category': categories
+    })
 
 @login_required(login_url='loginpage')
 def change_password(request):

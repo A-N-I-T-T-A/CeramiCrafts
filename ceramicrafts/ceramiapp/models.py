@@ -8,7 +8,12 @@ class userdetails(models.Model):
     address=models.CharField(max_length=255)
     phone=models.CharField(max_length=255)
     prf_image=models.ImageField(upload_to="user/",null=True)
+    slug = models.SlugField(unique=True, blank=True, null=True)  # Add slug field
 
+    def save(self, *args, **kwargs):
+        if not self.slug and self.user:
+            self.slug = slugify(f"user-{self.user.id}")
+        super().save(*args, **kwargs)
 
 class category(models.Model):
     category_name=models.CharField(max_length=255)

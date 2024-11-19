@@ -18,8 +18,7 @@
             <thead class="text-white bg-primary" style="font-weight: bold;">
                 <tr>
                     <td>Product Name</td>
-                    <td>Description</td>
-                    <td>Nos.</td>
+                    <td>Stock</td>
                     <td>Price</td>
                     <td>Category</td>
                     <td>Image</td>
@@ -30,7 +29,6 @@
                 {% for p in product %}
                     <tr>
                         <td>{{p.pdname}}</td>
-                        <td>{{p.pd_desc}}</td>
                         <td>{{p.nos}}</td>
                         <td>{{p.pdprice}}</td>
                         <td>{{p.category.category_name}}</td>

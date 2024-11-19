@@ -114,8 +114,7 @@
                             <div class="card-body">
                             <h4 class="card-title">{{pd.category.category_name}}</h4>
                             <h5 class="card-title">{{pd.pdname}}</h5>
-                            <p class="card-text">{{pd.pd_desc}}</p>
-                            <p class="card-text">{{pd.pdprice}}</p>
+                            <p class="card-text font-weight-bold" style="color: rgb(87, 1, 26);">₹ {{pd.pdprice}}</p>
                             <p class="card-text"><a href="{% url 'productview' pd.slug %}" class="btn btn-success">View More</a></p>
                             </div>
                         </div>
